@@ -32,9 +32,11 @@ db.Sequelize = Sequelize;
 db.sequelize = sequelize;
 
 db.user = require('./user')(sequelize, Sequelize);
+db.examination_room = require('./examination_room')(sequelize, Sequelize);
 
 
 // db.user.sync({force: true});
+// db.examination_room.sync({force:true});
 
 
 module.exports = db
