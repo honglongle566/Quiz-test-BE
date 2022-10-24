@@ -75,6 +75,60 @@ exports.checkAccessToken = async (req, res, next) => {
     }
 };
 
+exports.checkAccessTokenorNot = async (req, res, next) => {
+    try {
+        if (!req.headers.authorization) {
+            return null;
+        } else {
+            const token = req.headers.authorization.split(" ")[1];
+            const decodedToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+            let user = await models.user.findOne({
+                where: {
+                    Id: decodedToken.id,
+                    Email: decodedToken.email ? decodedToken.email : null
+                },
+                attributes: [
+                    'Id',
+                    'UserName',
+                    'Type',
+                    'Email'
+                ]
+            });
+            user = user ? {
+                id: user.id,
+                user_name: user.user_name,
+                email: user.email,
+                type: user.type,
+                is_user: 1
+            } : null
+            let customer = await models.customers.findOne({
+                where: {
+                    Id: decodedToken.id,
+                    Email: decodedToken.email ? decodedToken.email : null,
+                    EcommerceId: decodedToken.ecommerce_id ? decodedToken.ecommerce_id : null
+                },
+                attributes: [
+                    'id',
+                    'user_name',
+                    'type',
+                    'email'
+                ]
+            });
+            customer = customer ? {
+                id: customer.Id,
+                user_name: customer.UserName,
+                email: customer.Email,
+                type: customer.Type,
+                is_customer: 1
+            } : null
+            const response = user ? user : customer;
+            return response;
+        }
+    } catch (err) {
+        return res.json(responseWithError(ErrorCodes.ERROR_CODE_UNAUTHORIZED, "Invalid or expired token provided!", err.message));
+    }
+};
+
 exports.checkAdmin = (req,res, next) => {
     try { 
         if(req.user.role == 1 ) { 
