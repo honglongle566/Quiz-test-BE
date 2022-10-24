@@ -92,7 +92,6 @@ exports.login = (account) => {
             "password",
             "gender",
             "date_of_birth",
-            "tax_code",
             "avatar",
             "nation"
         ],
@@ -104,7 +103,6 @@ exports.login = (account) => {
     }).then(async (user) => {
         if(user) {
             const isMatch = await bcrypt.compare(account.password, user.password);
-            console.log(isMatch);
             if(isMatch == true) {
                 const access_token = signAccessToken(user);
                 const refresh_token = signRefreshToken(user);

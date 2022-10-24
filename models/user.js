@@ -16,10 +16,6 @@ module.exports = (sequelize, DataTypes) => {
       facebook_id:{
         type: Sequelize.STRING(255)
       },
-      type: {
-        type: Sequelize.INTEGER(2),
-        defaultValue: 1
-      },
       role: {
         type: Sequelize.INTEGER(2),
         defaultValue: false

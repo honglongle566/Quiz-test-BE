@@ -68,13 +68,10 @@ exports.register = async (req, res, next) => {
 };
 
 //Người dùng đăng nhập
-exports.login = async (req, res, next) => {
+exports.login = async (req, res) => {
     try{
         let data = await userService.login(req.body);
         if (data) {
-            // data= Object.assign(data, {access_token: data.access_token});
-            // data= Object.assign(data, {refresh_token: data.refresh_token});
-            console.log(data);
             res.json(responseSuccess({
                 id: data.user.id,
                 user_name: data.user.user_name,
@@ -84,7 +81,6 @@ exports.login = async (req, res, next) => {
                 gender: data.user.gender,
                 email: data.user.email,
                 date_of_birth: data.user.date_of_birth,
-                tax_code: data.user.tax_code,
                 nation: data.user.nation,
                 avatar: data.user.avatar,
                 access_token: data.access_token,
@@ -92,6 +88,7 @@ exports.login = async (req, res, next) => {
             }));
         }
     } catch(err){
+        console.log(err);
         res.json(responseWithError(err.status, 'error', err.message || ErrorCodes.ERROR_CODE_SYSTEM_ERROR, 'error', err));
     }
         
@@ -197,7 +194,10 @@ exports.forgotpassword = async(req, res,next) => {
                 });
             });
         };
-    } catch (err) {}
+    } catch (err) {
+        console.log(err);
+        res.json(responseWithError(ErrorCodes.ERROR_CODE_SYSTEM_ERROR, 'error', err));
+    }
 }
 //Cập nhật trạng thái tài khoản
 exports.confirm = async(req, res) => {
