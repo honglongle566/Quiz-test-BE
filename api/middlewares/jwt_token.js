@@ -39,7 +39,7 @@ exports.signRefreshToken = (req, res, next) => {
 exports.checkAccessToken = async (req, res, next) => {
     try{
         const token = req.headers.authorization.split(" ")[1];
-        const decodedToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+        const decodedToken = jwt.verify(token,"" + process.env.ACCESS_TOKEN_SECRET);
         const user_id = decodedToken.user_id?decodedToken.user_id:null;
         let user = await models.user.findOne({
             where: {
@@ -55,14 +55,6 @@ exports.checkAccessToken = async (req, res, next) => {
                 'role'
             ]
         });
-        user = user ? {
-            id: user.id,
-            full_name: user.full_name,
-            user_name: user.user_name,
-            role: user.role,
-            email: user.email,
-            phone: user.phone
-        }: null
         req.user = user;
         // const permission = await checkPermission(req.user.type);
         // req.permission = permission;
@@ -72,13 +64,13 @@ exports.checkAccessToken = async (req, res, next) => {
     }
 };
 
-exports.checkAccessTokenorNot = async (req, res, next) => {
+exports.checkAccessTokenorNot = async (req, res) => {
     try {
         if (!req.headers.authorization) {
             return null;
         } else {
             const token = req.headers.authorization.split(" ")[1];
-            const decodedToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+            const decodedToken = jwt.verify(token,"" + process.env.ACCESS_TOKEN_SECRET);
             let user = await models.user.findOne({
                 where: {
                     id: decodedToken.id,
@@ -91,13 +83,6 @@ exports.checkAccessTokenorNot = async (req, res, next) => {
                     'email'
                 ]
             });
-            // user = user ? {
-            //     id: user.id,
-            //     user_name: user.user_name,
-            //     email: user.email,
-            //     role: user.role,
-            //     is_user: 1
-            // } : null
             const response = user;
             return response;
         }

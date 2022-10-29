@@ -15,7 +15,7 @@ module.exports = (sequelize, DataTypes) =>{
             type: Sequelize.INTEGER(4)
         },
         name: { 
-            type: Sequelize.INTEGER(4)
+            type: Sequelize.STRING(255)
         },
         question: {
             type: Sequelize.STRING
@@ -34,11 +34,11 @@ module.exports = (sequelize, DataTypes) =>{
         },
         status: {
             type: Sequelize.INTEGER(2),
-            defaultValue: 0
+            defaultValue: 1
         },
         deleted: {
             type: Sequelize.INTEGER(2),
-            defaultVAlue: 0
+            defaultValue: 0
         },
         created_date: {
             type: Sequelize.DATE,
@@ -48,7 +48,7 @@ module.exports = (sequelize, DataTypes) =>{
             type: Sequelize.STRING(255)
         },
         updated_date: { 
-            type: Sequelize.STRING(255),
+            type: Sequelize.DATE,
             defaultValue: DataTypes.NOW
         },
         updated_by: {

@@ -83,7 +83,6 @@ exports.login = (account) => {
     return models.user.findOne({
         attributes: [
             "id",
-            "type",
             "role",
             "user_name",
             "full_name",
