@@ -15,7 +15,7 @@ exports.create = async (exam) => {
     if (!checkNameExisting) {
         return models.exam.create(exam);
     } else {
-        return Promise.resolve({ status: ErrorCodes.ERROR_CODE_ITEM_EXIST, message: messageConstants.EXAM_EXIST_NAME });
+        return Promise.reject({ status: ErrorCodes.ERROR_CODE_ITEM_EXIST, message: messageConstants.EXAM_EXIT_NAME });
     }
 };
 
@@ -68,11 +68,11 @@ exports.getAll = async(data) => {
 };
 
 //Get All Paging
-exports.getAllPaging = async() => {
+exports.getAllPaging = async(data) => {
     let condition = { 
         deleted: 0
     };
-    return models.exam.findAndCountAll({
+    return models.exam.findAndCountAll(data,{
         where: condition
     })
 };

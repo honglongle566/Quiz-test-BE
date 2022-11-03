@@ -14,6 +14,7 @@ exports.create = async(req, res) => {
         if(req.user.role == 2){
             req.body = {
                 ...req.body,
+                subject_id: req.body.subject_id,
                 user_id: user.id
             };
             let exam = await examService.create(req.body);
@@ -107,6 +108,7 @@ exports.getAll = async(req, res) => {
 //Get All Paging
 exports.getAllPaging = async(req, res) => {
     try {
+        console.log(11111);
         const page = parseInt(req.query.page_index) || 1;
         const size = parseInt(req.query.page_size);
         const { limit, offset } = Paginator.getPagination(page, size);
@@ -114,12 +116,12 @@ exports.getAllPaging = async(req, res) => {
             limit,
             offset
         };
+        console.log("condition", condition);
         await examService.getAllPaging(condition).then((result) => {
             const response = Paginator.getPagingData(result, page, limit);
             const examRes = response.rows.map(item => {
                 return item;
             });
-            console.log("examRes", examRes);
             res.json(responseSuccess(examRes));
         }).catch((err) => {
             console.log(err);
