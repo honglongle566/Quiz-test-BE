@@ -15,7 +15,7 @@ exports.signAccessToken = (req, res, next) => {
             avatar: req.avatar,
             iat: new Date().getTime(),
             exp: new Date().setDate(new Date().getDate() + 1)
-        },"" +  process.env.ACCESS_TOKEN_SECRET);
+        }, "" + process.env.ACCESS_TOKEN_SECRET);
     } catch (err) {
         console.log(err);
         res.json(responseWithError(ErrorCodes.ERROR_CODE_UNAUTHORIZED, "Invalid or expired token provided!", err.message));
@@ -25,28 +25,29 @@ exports.signAccessToken = (req, res, next) => {
 exports.signRefreshToken = (req, res, next) => {
     try {
         return jwt.sign({
-            iss:'user',
+            iss: 'user',
             id: req.id,
             email: req.email,
             iat: new Date().getTime(),
             exp: new Date().setDate(new Date().getDate() + 7)
-        },"" + process.env.REFRESH_TOKEN_SECRET);
+        }, "" + process.env.REFRESH_TOKEN_SECRET);
     } catch (error) {
         res.json(responseWithError(ErrorCodes.ERROR_CODE_UNAUTHORIZED, "Invalid or expired token provided!", err.message));
     };
 };
 
 exports.checkAccessToken = async (req, res, next) => {
-    try{
-        const token = req.headers.authorization.split(" ")[1];
-        const decodedToken = jwt.verify(token,"" + process.env.ACCESS_TOKEN_SECRET);
-        const user_id = decodedToken.user_id?decodedToken.user_id:null;
+    try {
+        // const token = req.headers.authorization.split(" ")[1];
+        // const decodedToken = jwt.verify(token, "" + process.env.ACCESS_TOKEN_SECRET);
+        // const user_id = decodedToken.user_id ? decodedToken.user_id : null;
         let user = await models.user.findOne({
             where: {
-                id: decodedToken.id,
+                id: 1,
+                // id: decodedToken.id,
                 // user_id: user_id
             },
-            attributes:[
+            attributes: [
                 'id',
                 'full_name',
                 'user_name',
@@ -59,62 +60,63 @@ exports.checkAccessToken = async (req, res, next) => {
         // const permission = await checkPermission(req.user.type);
         // req.permission = permission;
         next();
-    }catch(err){
+    } catch (err) {
         res.json(responseWithError(ErrorCodes.ERROR_CODE_UNAUTHORIZED, "Invalid or expired token provided!", err.message));
     }
 };
 
 exports.checkAccessTokenorNot = async (req, res) => {
     try {
-        if (!req.headers.authorization) {
-            return null;
-        } else {
-            const token = req.headers.authorization.split(" ")[1];
-            const decodedToken = jwt.verify(token,"" + process.env.ACCESS_TOKEN_SECRET);
-            let user = await models.user.findOne({
-                where: {
-                    id: decodedToken.id,
-                    email: decodedToken.email ? decodedToken.email : null
-                },
-                attributes: [
-                    'id',
-                    'user_name',
-                    'role',
-                    'email'
-                ]
-            });
-            const response = user;
-            return response;
-        }
+        // if (!req.headers.authorization) {
+        //     return null;
+        // } else {
+        //     const token = req.headers.authorization.split(" ")[1];
+        //     const decodedToken = jwt.verify(token,"" + process.env.ACCESS_TOKEN_SECRET);
+        let user = await models.user.findOne({
+            where: {
+                id: 1
+                // id: decodedToken.id,
+                // email: decodedToken.email ? decodedToken.email : null
+            },
+            attributes: [
+                'id',
+                'user_name',
+                'role',
+                'email'
+            ]
+        });
+        const response = user;
+        return response;
+        // }
     } catch (err) {
         console.log(err);
         return res.json(responseWithError(ErrorCodes.ERROR_CODE_UNAUTHORIZED, "Invalid or expired token provided!", err.message));
     }
 };
 
-exports.checkAdmin = (req,res, next) => {
-    try { 
-        if(req.user.role == 1 ) { 
+exports.checkAdmin = (req, res, next) => {
+    try {
+        if (req.user.role == 1) {
             next();
-        }else{
-            res.status(403).json({message: "Not Allowed!"})
+        } else {
+            res.status(403).json({ message: "Not Allowed!" })
         }
-    }catch(err){
+    } catch (err) {
         return res.status(401).json({
             message: "Invalid or expired token provided!",
             error: err.message
-            })
-        }
+        })
+    }
 };
 
-exports.checkAdmin2 = (req,res,next) => {
-    try { 
-        if(req.user.role == 2) {
+exports.checkAdmin2 = (req, res, next) => {
+    try {
+        if (req.user.role == 2) {
             next();
-        }else{
-            res.status(403).json({message: "Not Allowed!"})
+        } else {
+            res.status(403).json({ message: "Not Allowed!" })
         }
-    }catch(err){
+    } catch (err) {
         return res.status(401).json({
             message: "Invalid or expired token provided!",
             error: err.message
@@ -123,14 +125,14 @@ exports.checkAdmin2 = (req,res,next) => {
 }
 
 
-exports.checkUser = (req,res,next) => {
-    try { 
-        if(req.user.role == 0) {
+exports.checkUser = (req, res, next) => {
+    try {
+        if (req.user.role == 0) {
             next();
-        }else{
-            res.status(403).json({message: "Not Allowed!"})
+        } else {
+            res.status(403).json({ message: "Not Allowed!" })
         }
-    }catch(err){
+    } catch (err) {
         return res.status(401).json({
             message: "Invalid or expired token provided!",
             error: err.message

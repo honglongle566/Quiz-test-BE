@@ -1,14 +1,14 @@
-const {Sequelize, DataTypes} = require('sequelize');
+const { Sequelize, DataTypes } = require('sequelize');
 
-module.exports = (sequelize, DataTypes) =>{
-    var notification = sequelize.define('notification',{
+module.exports = (sequelize, DataTypes) => {
+    var notification = sequelize.define('notification', {
         id: {
             allowNull: false,
             autoIncrement: true,
             primaryKey: true,
             type: Sequelize.INTEGER(4)
         },
-        user_id:{
+        user_id: {
             type: Sequelize.INTEGER(4)
         },
         exam_id: {
@@ -20,10 +20,10 @@ module.exports = (sequelize, DataTypes) =>{
         question_id: {
             type: Sequelize.INTEGER(4)
         },
-        group_question_id :{
+        group_question_id: {
             type: Sequelize.INTEGER(4)
         },
-        name: { 
+        name: {
             type: Sequelize.INTEGER(4)
         },
         status: {
@@ -32,23 +32,23 @@ module.exports = (sequelize, DataTypes) =>{
         },
         deleted: {
             type: Sequelize.INTEGER(2),
-            defaultVAlue: 0
+            defaultValue: 0
         },
         created_date: {
             type: Sequelize.DATE,
             defaultValue: DataTypes.NOW
         },
-        created_by:{
+        created_by: {
             type: Sequelize.STRING(255)
         },
-        updated_date: { 
-            type: Sequelize.STRING(255),
+        updated_date: {
+            type: Sequelize.DATE,
             defaultValue: DataTypes.NOW
         },
         updated_by: {
             type: Sequelize.STRING(255)
         }
-    },{
+    }, {
         timestamps: false,
     }
     );

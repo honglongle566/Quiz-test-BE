@@ -1,4 +1,4 @@
-const {Sequelize, DataTypes} = require('sequelize');
+const { Sequelize, DataTypes } = require('sequelize');
 
 module.exports = (sequelize, DataTypes) => {
     var question = sequelize.define('question', {
@@ -8,10 +8,10 @@ module.exports = (sequelize, DataTypes) => {
             primaryKey: true,
             type: Sequelize.INTEGER(4)
         },
-        user_id:{ 
+        user_id: {
             type: Sequelize.INTEGER(4)
         },
-        group_question_id : {
+        group_question_id: {
             type: Sequelize.INTEGER(4)
         },
         name: {
@@ -29,13 +29,13 @@ module.exports = (sequelize, DataTypes) => {
         score: {
             type: Sequelize.INTEGER(2)
         },
-        correct_answer: { 
+        correct_answer: {
             type: Sequelize.STRING
         },
-        matching_correct: { 
+        matching_correct: {
             type: Sequelize.STRING
         },
-        matching_answers: { 
+        matching_answers: {
             type: Sequelize.STRING
         },
         fill_blank_correct_answer: {
@@ -62,7 +62,7 @@ module.exports = (sequelize, DataTypes) => {
         updated_by: {
             type: Sequelize.STRING(255)
         }
-    },{
+    }, {
         timestamps: false,
     });
     return question;

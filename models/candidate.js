@@ -1,17 +1,17 @@
-const {Sequelize ,DataTypes} = require('sequelize');
+const { Sequelize, DataTypes } = require('sequelize');
 
 module.exports = (sequelize, DataTypes) => {
-    var candidate = sequelize.define('candidate',{
+    var candidate = sequelize.define('candidate', {
         id: {
             allowNull: false,
             autoIncrement: true,
             primaryKey: true,
-            type: Sequelize.INTEGER(4) 
+            type: Sequelize.INTEGER(4)
         },
         exam_id: {
             type: Sequelize.INTEGER(4)
         },
-        examination_room_id:{
+        examination_room_id: {
             type: Sequelize.INTEGER(4)
         },
         full_name: {
@@ -26,7 +26,7 @@ module.exports = (sequelize, DataTypes) => {
         group: {
             type: Sequelize.STRING(255)
         },
-        identify_code : {
+        identify_code: {
             type: Sequelize.STRING(255)
         },
         token: {
@@ -50,17 +50,17 @@ module.exports = (sequelize, DataTypes) => {
             type: Sequelize.DATE,
             defaultValue: DataTypes.NOW
         },
-        created_by:{
+        created_by: {
             type: Sequelize.STRING(255)
         },
-        updated_date: { 
-            type: Sequelize.STRING(255),
+        updated_date: {
+            type: Sequelize.DATE,
             defaultValue: DataTypes.NOW
         },
         updated_by: {
             type: Sequelize.STRING(255)
         }
-    },{
+    }, {
         timestamps: false
     });
     return candidate;

@@ -1,18 +1,18 @@
-const {Sequelize, DataTypes} = require('sequelize');
+const { Sequelize, DataTypes } = require('sequelize');
 
-module.exports = (sequelize, DataTypes) =>{
-    var category = sequelize.define('category',{
+module.exports = (sequelize, DataTypes) => {
+    var category = sequelize.define('category', {
         id: {
             allowNull: false,
             autoIncrement: true,
             primaryKey: true,
             type: Sequelize.INTEGER(4)
         },
-        user_id:{
+        user_id: {
             type: Sequelize.INTEGER(4)
         },
-        name: { 
-            type: Sequelize.INTEGER(4)
+        name: {
+            type: Sequelize.STRING(255)
         },
         status: {
             type: Sequelize.INTEGER(2),
@@ -20,23 +20,23 @@ module.exports = (sequelize, DataTypes) =>{
         },
         deleted: {
             type: Sequelize.INTEGER(2),
-            defaultVAlue: 0
+            defaultValue: 0
         },
         created_date: {
             type: Sequelize.DATE,
             defaultValue: DataTypes.NOW
         },
-        created_by:{
+        created_by: {
             type: Sequelize.STRING(255)
         },
-        updated_date: { 
-            type: Sequelize.STRING(255),
+        updated_date: {
+            type: Sequelize.DATE,
             defaultValue: DataTypes.NOW
         },
         updated_by: {
             type: Sequelize.STRING(255)
         }
-    },{
+    }, {
         timestamps: false,
     }
     );

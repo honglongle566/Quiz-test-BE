@@ -1,7 +1,7 @@
 {
     "development": {
-      "username": "root",
-      "password": "abc12345",
+      "username": "admin",
+      "password": "Admin*123456",
       "database": "quiz_test",
       "host": "localhost",
       "port": "3306",
@@ -19,8 +19,8 @@
       }
     },
     "dev": {
-      "username": "root",
-      "password": "abc12345",
+      "username": "admin",
+      "password": "Admin*123456",
       "database": "quiz_test",
       "host": "localhost",
       "port": "3306",
@@ -46,8 +46,8 @@
       }
     },
     "production": {
-      "username": "root",
-      "password": "abc12345",
+      "username": "admin",
+      "password": "Admin*123456",
       "database": "quiz_test",
       "host": "localhost",
       "dialect": "mysql",

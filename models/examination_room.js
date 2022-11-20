@@ -1,4 +1,4 @@
-const { Sequelize ,DataTypes} = require('sequelize');
+const { Sequelize, DataTypes } = require('sequelize');
 
 module.exports = (sequelize, DataTypes) => {
     var examination_room = sequelize.define(
@@ -25,7 +25,7 @@ module.exports = (sequelize, DataTypes) => {
             pass_mark: {
                 type: Sequelize.INTEGER(3),
             },
-            is_require_email:{
+            is_require_email: {
                 type: Sequelize.INTEGER(2),
             },
             is_require_full_name: {
@@ -37,7 +37,7 @@ module.exports = (sequelize, DataTypes) => {
             is_require_group: {
                 type: Sequelize.INTEGER(2),
             },
-            is_require_identify_code : {
+            is_require_identify_code: {
                 type: Sequelize.INTEGER(2)
             },
             code_room: {
@@ -65,12 +65,12 @@ module.exports = (sequelize, DataTypes) => {
                 type: Sequelize.DATE,
                 defaultValue: DataTypes.NOW
             },
-            updated_by:{
+            updated_by: {
                 type: Sequelize.STRING(255)
             }
-        },{
-            timestamps: false,
-        }
+        }, {
+        timestamps: false,
+    }
     );
     return examination_room;
 }
