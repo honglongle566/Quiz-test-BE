@@ -3,11 +3,14 @@ const { ErrorCodes } = require('../helper/constants');
 const messageConstants = require('../constant/messageConstants');
 const { ChainCondition } = require('express-validator/src/context-items');
 models.category.belongsTo(models.user, { foreignKey: "user_id" });
+models.category.hasMany(models.subject, { foreignKey: 'category_id' })
+models.subject.belongsTo(models.category, { foreignKey: 'category_id' })
+
 
 exports.create = async (category) => {
-    console.log('category', category);
     var checkNameExisting = await models.category.findOne({
         where: {
+            user_id: category.user_id,
             name: category.name,
             deleted: 0
         }
@@ -23,6 +26,7 @@ exports.create = async (category) => {
 exports.update = async (id, category) => {
     var checkNameExisting = await models.category.findOne({
         where: {
+            user_id: category.user_id,
             name: category.name,
             deleted: 0
         }
@@ -31,6 +35,7 @@ exports.update = async (id, category) => {
         return models.category.update(category, {
             where: {
                 id: id,
+                user_id: category.user_id,
                 deleted: 0
             }
         });
@@ -60,15 +65,17 @@ exports.getAll = async (data) => {
     };
     return models.category.findAll({
         data,
-        where: condition
-    });
+        where: condition, include: [models.subject]
+    })
 };
 
 exports.getAllPaging = async (data) => {
     let condition = {
         deleted: 0
     };
-    return models.category.findAndCountAll(data, {
-        where: condition
+    return models.category.findAndCountAll({
+        where: condition,
+        include: [models.subject],
+        ...data,
     })
 };

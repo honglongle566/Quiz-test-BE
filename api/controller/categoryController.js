@@ -87,9 +87,9 @@ exports.getAllPaging = async (req, res) => {
         const { limit, offset } = Paginator.getPagination(page, size);
         const condition = {
             limit,
-            offset
+            offset,
+            distinct: true
         };
-        console.log(213, condition);
         await categoryService.getAllPaging(condition).then((result) => {
             const response = Paginator.getPagingData(result, page, limit);
 

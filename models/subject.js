@@ -8,14 +8,11 @@ module.exports = (sequelize, DataTypes) => {
             primaryKey: true,
             type: Sequelize.INTEGER(4)
         },
-        user_id: {
-            type: Sequelize.INTEGER(4)
-        },
         category_id: {
             type: Sequelize.INTEGER(4)
         },
         name: {
-            type: Sequelize.INTEGER(4)
+            type: Sequelize.STRING(255)
         },
         status: {
             type: Sequelize.INTEGER(2),

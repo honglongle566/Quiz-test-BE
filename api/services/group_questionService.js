@@ -4,15 +4,16 @@ const messageConstants = require('../constant/messageConstants');
 const { ChainCondition } = require('express-validator/src/context-items');
 models.group_question.belongsTo(models.user, { foreignKey: "user_id" });
 
-exports.create = async (groupGuestion) => {
+exports.create = async (groupQuestion) => {
     var checkNameExisting = await models.group_question.findOne({
         where: {
-            name: groupGuestion.name,
+            user_id: groupQuestion.user_id,
+            name: groupQuestion.name,
             deleted: 0
         }
     });
     if (!checkNameExisting) {
-        return models.group_question.create(groupGuestion);
+        return models.group_question.create(groupQuestion);
     } else {
         return Promise.reject({ status: ErrorCodes.ERROR_CODE_ITEM_EXIST, message: messageConstants.GROUP_QUESTION_EXIST_NAME });
     }
@@ -22,6 +23,7 @@ exports.create = async (groupGuestion) => {
 exports.update = async (id, groupQuestion) => {
     var checkNameExisting = await models.group_question.findOne({
         where: {
+            user_id: groupQuestion.user_id,
             name: groupQuestion.name,
             deleted: 0
         }
@@ -30,6 +32,7 @@ exports.update = async (id, groupQuestion) => {
         return models.group_question.update(groupQuestion, {
             where: {
                 id: id,
+                user_id: groupQuestion.user_id,
                 deleted: 0
             }
         });
