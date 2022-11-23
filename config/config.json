@@ -1,0 +1,56 @@
+{
+    "development": {
+      "username": "admin",
+      "password": "Admin*123456",
+      "database": "quiz_test",
+      "host": "localhost",
+      "port": "3306",
+      "dialect": "mysql",
+      "logging": false,
+      "pool": {
+        "max": 100,
+        "min": 0,
+        "acquire": 1000000,
+        "idle": 200000
+      },
+      "dialectOptions": {
+        "dateStrings": true,
+        "typeCast": true
+      }
+    },
+    "dev": {
+      "username": "admin",
+      "password": "Admin*123456",
+      "database": "quiz_test",
+      "host": "localhost",
+      "port": "3306",
+      "dialect": "mysql",
+      "logging": false,
+      "pool": {
+        "max": 100,
+        "min": 0,
+        "acquire": 1000000,
+        "idle": 200000
+      },
+      "dialectOptions": {
+        "dateStrings": true,
+        "typeCast": true
+      },
+      "define": {
+        "freezeTableName": true,
+        "charset": "utf8",
+        "dialectOptions": {
+          "collate": "utf8_general_ci"
+        },
+        "timezone": "+07:00"
+      }
+    },
+    "production": {
+      "username": "admin",
+      "password": "Admin*123456",
+      "database": "quiz_test",
+      "host": "localhost",
+      "dialect": "mysql",
+      "logging": true
+    }
+  }

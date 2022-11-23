@@ -1,41 +1,64 @@
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
+const express = require("express");
+const bodyParser = require("body-parser");
+const morgan = require("morgan");
+const app = express();
+const createError = require("http-errors");
+const cors = require("cors");
+const path = require("path");
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
 
-var app = express();
+app.use(cors());
+require("dotenv").config();
+const port = process.env.PORT ;
+app.use(express.static("public"));
+app.use(cors());
+// const initializePassport= require('./config/passportConfig');
+// initializePassport(passport);
+const route = require("./api/routes");
+const { sequelize } = require("./models");
+const http =require ("http");
+// socket.io
+/** Create HTTP server. */
+const server = http.createServer(app);
+/** Listen on provided port, on all network interfaces. */
+server.listen(port);
+/** Event listener for HTTP server "listening" event. */
+server.on("listening", async() => {
+  console.log(`Listening on port http://localhost:${port}`);
+  try{
+    await sequelize;
+    console.log("Connection DB has been established successfully.");
+  } catch (error) {
+    console.error("Unable to connect to the database:", error);
+  }
+});
+global.__basedir = __dirname;
 
-// view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');
-
-app.use(logger('dev'));
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
-
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
-
-// catch 404 and forward to error handler
-app.use(function(req, res, next) {
-  next(createError(404));
+app.use(express.urlencoded({ extended: true }));
+// parse request data  content type
+// Enable CORS from client-side
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Methods", "PUT, GET, POST, DELETE, OPTIONS");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept, Authentication, Access-Control-Allow-Credentials"
+  );
+  res.header("Access-Control-Allow-Credentials", "true");
+  next();
 });
 
-// error handler
-app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
+app.use(morgan("combined"));
 
-  // render the error page
-  res.status(err.status || 500);
-  res.render('error');
+
+// Route init
+// route(app);
+app.use(route);
+
+
+app.get("/", async (req, res, next) => {
+  res.send("Welcome to Quiz-Test");
 });
 
-module.exports = app;
+app.use(express.static(path.join(__dirname, "/")));
