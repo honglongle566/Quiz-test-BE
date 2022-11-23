@@ -92,7 +92,6 @@ exports.getAllPaging = async (req, res) => {
         };
         await categoryService.getAllPaging(condition).then((result) => {
             const response = Paginator.getPagingData(result, page, limit);
-
             res.json(responseSuccess(response));
         }).catch((err) => {
             console.log(err);

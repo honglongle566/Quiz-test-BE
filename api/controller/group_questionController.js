@@ -89,10 +89,8 @@ exports.getAllPaging = async (req, res) => {
             limit,
             offset
         };
-        console.log(213, condition);
         await group_questionService.getAllPaging(condition).then((result) => {
             const response = Paginator.getPagingData(result, page, limit);
-
             res.json(responseSuccess(response));
         }).catch((err) => {
             console.log(err);
