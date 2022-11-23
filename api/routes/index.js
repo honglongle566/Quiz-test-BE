@@ -7,12 +7,12 @@ const categoryRouter = require('./category')
 const subjectRouter = require('./subject')
 
 const router = express.Router();
-router.use('/user', usersRouter);
-router.use('/exam', examRouter);
-router.use('/examination-room', examinationRouter);
-router.use('/group-question', groupQuestionRouter);
-router.use('/category', categoryRouter);
-router.use('/subject', subjectRouter);
+router.use('/api/user', usersRouter);
+router.use('/api/exam', examRouter);
+router.use('/api/examination-room', examinationRouter);
+router.use('/api/group-question', groupQuestionRouter);
+router.use('/api/category', categoryRouter);
+router.use('/api/subject', subjectRouter);
 
 
 module.exports = router;
