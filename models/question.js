@@ -47,6 +47,7 @@ module.exports = (sequelize, DataTypes) => {
         },
         deleted: {
             type: Sequelize.INTEGER(2),
+            defaultValue: 0
         },
         creted_date: {
             type: Sequelize.DATE,

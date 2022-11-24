@@ -12,7 +12,7 @@ exports.create = async (exam) => {
             deleted: 0
         }
     });
-    if (!checkNameExisting) {
+    if (checkNameExisting) {
         return models.exam.create(exam);
     } else {
         return Promise.reject({ status: ErrorCodes.ERROR_CODE_ITEM_EXIST, message: messageConstants.EXAM_EXIT_NAME });

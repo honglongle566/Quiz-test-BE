@@ -36,7 +36,7 @@ exports.update = async(req, res) => {
             ...req.body,
             user_id: user.id
         };
-        if(user.type.role == 2){
+        if(req.user.role == 2){
             let question = await questionService.update(id, req.body);
             res.json(responseSuccess(question));
         }else{
@@ -53,11 +53,12 @@ exports.delete = async(req, res) => {
     try {
         var user = await checkAccessTokenorNot(req);
         const id = req.params.id;
-        let data = {
+        req.body = {
+            ...req.body,
             user_id: user.id
-        };
+        }
         if(req.user.role == 2){
-            let question = await questionService.delete(id, data);
+            let question = await questionService.delete(id, req.body);
             res.json(responseSuccess(question));
         }else{
             res.json('Not Allowed!!!');

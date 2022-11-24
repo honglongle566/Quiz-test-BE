@@ -5,13 +5,13 @@ const messageConstants = require("../constant/messageConstants");
 
 //Create question
 exports.create = async (question) => {
-  let checkExitingName = await models.question.findOne({
+  let checkExistingName = await models.question.findOne({
     where: {
       name: question.name,
-      deleted: 0,
-    },
+      deleted: 0
+    }
   });
-  if (!checkExitingName) {
+  if (!checkExistingName ) {
     return models.question.create(question);
   } else {
     return Promise.reject({
@@ -22,12 +22,17 @@ exports.create = async (question) => {
 
 //Update question
 exports.update = async (id, questionUpdate) => {
-  return models.question.update(questionUpdate, {
+  let question = await models.question.update(questionUpdate, {
     where: {
       id: id,
       deleted: 0,
     },
   });
+  if(question){
+    return true;
+  }else{
+    return false;
+  }
 };
 
 //Delete question
