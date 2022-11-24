@@ -12,11 +12,10 @@ exports.create = async (question) => {
     },
   });
   if (!checkExitingName) {
-    return models.question.creat(question);
+    return models.question.create(question);
   } else {
     return Promise.reject({
-      status: ErrorCodes.ERROR_CODE_ITEM_EXIST,
-      message: messageConstants.QUESTION_EXIST_NAME,
+      status: ErrorCodes.ERROR_CODE_ITEM_EXIST,message: messageConstants.QUESTION_EXIST_NAME,
     });
   }
 };

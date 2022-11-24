@@ -38,13 +38,12 @@ exports.signRefreshToken = (req, res, next) => {
 
 exports.checkAccessToken = async (req, res, next) => {
     try {
-        // const token = req.headers.authorization.split(" ")[1];
-        // const decodedToken = jwt.verify(token, "" + process.env.ACCESS_TOKEN_SECRET);
-        // const user_id = decodedToken.user_id ? decodedToken.user_id : null;
+        const token = req.headers.authorization.split(" ")[1];
+        const decodedToken = jwt.verify(token, "" + process.env.ACCESS_TOKEN_SECRET);
+        const user_id = decodedToken.user_id ? decodedToken.user_id : null;
         let user = await models.user.findOne({
             where: {
-                id: 1,
-                // id: decodedToken.id,
+                id: decodedToken.id,
                 // user_id: user_id
             },
             attributes: [
@@ -67,16 +66,15 @@ exports.checkAccessToken = async (req, res, next) => {
 
 exports.checkAccessTokenorNot = async (req, res) => {
     try {
-        // if (!req.headers.authorization) {
-        //     return null;
-        // } else {
-        //     const token = req.headers.authorization.split(" ")[1];
-        //     const decodedToken = jwt.verify(token,"" + process.env.ACCESS_TOKEN_SECRET);
+        if (!req.headers.authorization) {
+            return null;
+        } else {
+            const token = req.headers.authorization.split(" ")[1];
+            const decodedToken = jwt.verify(token,"" + process.env.ACCESS_TOKEN_SECRET);
         let user = await models.user.findOne({
             where: {
-                id: 1
-                // id: decodedToken.id,
-                // email: decodedToken.email ? decodedToken.email : null
+                id: decodedToken.id,
+                email: decodedToken.email ? decodedToken.email : null
             },
             attributes: [
                 'id',
@@ -87,7 +85,7 @@ exports.checkAccessTokenorNot = async (req, res) => {
         });
         const response = user;
         return response;
-        // }
+        }
     } catch (err) {
         console.log(err);
         return res.json(responseWithError(ErrorCodes.ERROR_CODE_UNAUTHORIZED, "Invalid or expired token provided!", err.message));

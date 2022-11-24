@@ -12,11 +12,11 @@ exports.create = async(req, res) => {
     try {
         var user = await checkAccessTokenorNot(req);
         if(req.user.role == 2){
-            let data = { 
-                ...data,
+            req.body = { 
+                ...req.body,
                 user_id: user.id
             };
-            let question = await questionService.create(data);
+            let question = await questionService.create(req.body);
             res.json(responseSuccess(question));
         }else{
         res.json('Not Allowed!!!');
