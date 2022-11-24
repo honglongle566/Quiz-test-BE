@@ -15,7 +15,6 @@ const models = require('../../models');
 
 //Người dùng đăng ký tài khoản
 exports.register = async (req, res, next) => {
-    console.log(req.body);
     try {
         userService.register(req.body).then(async result => {
             console.log(req.headers);
@@ -35,7 +34,7 @@ exports.register = async (req, res, next) => {
                 expires: timeExpire,
             };
             userService.update(result.id, options);
-            const from_email = "smiletechcorp2018@gmail.com";
+            const from_email = "lehonglong307@gmail.com";
             const to_email = `${result.email}`;
             var url = "http://" + req.headers.host + "/user/confirm/" + token;
             var mailOptions = {
