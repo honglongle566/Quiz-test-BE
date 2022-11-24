@@ -11,7 +11,7 @@ const { condition } = require('sequelize');
 exports.create = async(req, res) => {
     try {
         var user = await checkAccessTokenorNot(req);
-        if(req.user.role == 2){
+        if(req.user.role == 2 ||req.user.role == 0){
             req.body = { 
                 ...req.body,
                 user_id: user.id
