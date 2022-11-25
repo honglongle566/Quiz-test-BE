@@ -1,4 +1,5 @@
 const models = require('../../models');
+const { Op } = require("sequelize");
 const { ErrorCodes } = require('../helper/constants');
 const messageConstants = require('../constant/messageConstants');
 const { ChainCondition } = require('express-validator/src/context-items');
@@ -46,15 +47,9 @@ exports.update = async (id, category) => {
 };
 
 exports.delete = async (id) => {
-    var delete_option = {
-        field: "deleted",
-        deleted: 1,
-        updated_date: Date()
-    }
-    return models.category.update(delete_option, {
+    return models.category.destroy({
         where: {
             id: id,
-            deleted: 0
         }
     })
 };
@@ -69,13 +64,26 @@ exports.getAll = async (data) => {
     })
 };
 
-exports.getAllPaging = async (data) => {
+exports.getAllPaging = async (data, keyword) => {
     let condition = {
-        deleted: 0
+        deleted: 0,
     };
+    if (keyword) {
+        condition.name = {
+            [Op.like]: `%${keyword}%`,
+        }
+    }
     return models.category.findAndCountAll({
         where: condition,
-        include: [models.subject],
+        include: {
+            model: models.subject,
+            where: {
+                deleted: 0
+            }
+        },
         ...data,
+        order: [
+            ['id', 'DESC'],
+        ],
     })
 };

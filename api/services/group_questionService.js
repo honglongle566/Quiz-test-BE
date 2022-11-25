@@ -2,6 +2,7 @@ const models = require('../../models');
 const { ErrorCodes } = require('../helper/constants');
 const messageConstants = require('../constant/messageConstants');
 const { ChainCondition } = require('express-validator/src/context-items');
+const { Op } = require("sequelize");
 models.group_question.belongsTo(models.user, { foreignKey: "user_id" });
 
 exports.create = async (groupQuestion) => {
@@ -66,11 +67,16 @@ exports.getAll = async (data) => {
     });
 };
 
-exports.getAllPaging = async (data) => {
+exports.getAllPaging = async (data, keyword) => {
     let condition = {
-        deleted: 0
+        deleted: 0,
+        name: {
+            [Op.like]: `%${keyword}%`,
+        }
+
     };
-    return models.group_question.findAndCountAll(data, {
-        where: condition
+    return models.group_question.findAndCountAll({
+        where: condition,
+        ...data
     })
 };

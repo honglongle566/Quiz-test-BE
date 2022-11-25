@@ -84,19 +84,21 @@ exports.getAllPaging = async (req, res) => {
     try {
         const page = parseInt(req.query.page_index) || 1;
         const size = parseInt(req.query.page_size);
+        const keyword = req.query.keyword || ''
         const { limit, offset } = Paginator.getPagination(page, size);
         const condition = {
             limit,
             offset,
             distinct: true
         };
-        await categoryService.getAllPaging(condition).then((result) => {
+        await categoryService.getAllPaging(condition, keyword).then((result) => {
             const response = Paginator.getPagingData(result, page, limit);
             res.json(responseSuccess(response));
         }).catch((err) => {
             console.log(err);
             res.json(responseWithError(ErrorCodes.ERROR_CODE_SYSTEM_ERROR, 'error', err));
         });
+
     } catch (err) {
         console.log(err);
         res.json(responseWithError(err, 'error' || ErrorCodes.ERROR_CODE_SYSTEM_ERROR, 'error', err));
