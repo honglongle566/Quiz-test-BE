@@ -73,17 +73,25 @@ exports.getAllPaging = async (data, keyword) => {
             [Op.like]: `%${keyword}%`,
         }
     }
-    return models.category.findAndCountAll({
+    const { count, rows } = await models.category.findAndCountAll({
         where: condition,
-        include: {
-            model: models.subject,
-            where: {
-                deleted: 0
-            }
-        },
         ...data,
         order: [
             ['id', 'DESC'],
         ],
     })
+    const rowsJSON = JSON.parse(JSON.stringify(rows))
+    const categoryIds = rowsJSON.map(item => {
+        return item.id
+    })
+    const subject = await models.subject.findAll({
+        where: {
+            category_id: { [Op.in]: categoryIds },
+            ...condition
+        },
+    })
+    const rowsCategorySubject = rowsJSON.map(item => {
+        return { ...item, subjects: JSON.parse(JSON.stringify(subject)).filter(sub => sub.category_id === item.id) }
+    });
+    return { count, rows: rowsCategorySubject }
 };

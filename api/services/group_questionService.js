@@ -20,7 +20,6 @@ exports.create = async (groupQuestion) => {
     }
 };
 
-
 exports.update = async (id, groupQuestion) => {
     var checkNameExisting = await models.group_question.findOne({
         where: {
