@@ -1,5 +1,6 @@
 const { checkAccessTokenorNot } = require('../middlewares/jwt_token');
 const subjectService = require('../services/subjectService');
+const categoryService= require('../services/categoryService');
 const messageConstants = require('../constant/messageConstants');
 const Paginator = require('../commons/paginator');
 const { validationResult } = require('express-validator');
@@ -20,6 +21,26 @@ exports.create = async (req, res) => {
         res.json(responseWithError(err, 'error' || ErrorCodes.ERROR_CODE_SYSTEM_ERROR, 'error', err));
     }
 };
+exports.createAll= async(req,res)=>{
+    try {
+        if (req.user.role == 2|| req.user.role==0) {
+            req.body.user_id=req.user.id;
+            let category = await categoryService.create(req.body);
+            let subject= req.body.subject;
+            await Promise.all(subject.map(async (ele) => {
+                ele.category_id= category.id;
+                let data= await subjectService.create(ele);
+            }))
+            
+            res.json(responseSuccess());
+        } else {
+            res.json('Not Allowed!!!');
+        }
+    } catch (err) {
+        console.log(err);
+        res.json(responseWithError(err, 'error' || ErrorCodes.ERROR_CODE_SYSTEM_ERROR, 'error', err));
+    }
+}
 
 exports.update = async (req, res) => {
     try {

@@ -42,10 +42,10 @@ db.candidate = require('./candidate')(sequelize, Sequelize);
 db.candidate_result_detail = require('./candidate_result_detail')(sequelize, Sequelize);
 db.notification = require('./notification')(sequelize, Sequelize);
 
-// db.user.sync({ alter: true });
+// db.question.sync({ alter: true });
 // db.examination_room.sync({ force: true });
 // db.exam.sync({ force: true });
-// db.category.sync({ force: true });
+ //db.category.sync({ alter: true });
 // db.question.sync({ force: true });
 // db.group_question.sync({ force: true });
 // db.subject.sync({ force: true });
