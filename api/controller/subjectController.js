@@ -24,9 +24,11 @@ exports.create = async (req, res) => {
 exports.createAll= async(req,res)=>{
     try {
         if (req.user.role == 2|| req.user.role==0) {
+            req.body.user_id=req.user.id;
             let category = await categoryService.create(req.body);
             let subject= req.body.subject;
             await Promise.all(subject.map(async (ele) => {
+                ele.category_id= category.id;
                 let data= await subjectService.create(ele);
             }))
             
@@ -34,7 +36,7 @@ exports.createAll= async(req,res)=>{
         } else {
             res.json('Not Allowed!!!');
         }
-    } catch (error) {
+    } catch (err) {
         console.log(err);
         res.json(responseWithError(err, 'error' || ErrorCodes.ERROR_CODE_SYSTEM_ERROR, 'error', err));
     }
