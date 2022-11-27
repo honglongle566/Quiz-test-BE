@@ -14,6 +14,7 @@ exports.register = async(user) => {
             user_name: user.user_name
         }
     });
+    
     if(!user_name){
         if(user.email){
             var emailuser = await models.user.findOne({

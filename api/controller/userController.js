@@ -16,7 +16,8 @@ const models = require('../../models');
 //Người dùng đăng ký tài khoản
 exports.register = async (req, res, next) => {
     try {
-        userService.register(req.body).then(async result => {
+        userService.register(req.body).then(async (result) => {
+            console.log(11111);
             console.log(req.headers);
             res.status(200).json({ success: true, code: 0, message: messageConstants.USER_CREATE_SUSSCESS, data_user: result });
             const tokenObject = {
@@ -36,7 +37,7 @@ exports.register = async (req, res, next) => {
             userService.update(result.id, options);
             const from_email = "lehonglong307@gmail.com";
             const to_email = `${result.email}`;
-            var url = "http://" + req.headers.host + "/user/confirm/" + token;
+            var url = "http://" + req.headers.host + "/api/user/confirm/" + token;
             var mailOptions = {
                 from: from_email,
                 to: to_email,
@@ -261,7 +262,7 @@ exports.sendVerify = async (req, res) => {
                     verify_data: email
                 });
             });
-            const from_email = "smiletechcorp2018@gmail.com";
+            const from_email = "lehonglong307@gmail.com";
             const to_email = `${email}`;
             var url = "http://" + req.body.url + "/confirm/" + token;
             var mailOptions = {
@@ -322,9 +323,9 @@ exports.sendMail = async (req, res) => {
                 verify_data: email
             });
         });
-          const from_email = "smiletechcorp2018@gmail.com";
+          const from_email = "lehonglong307@gmail.com";
           const to_email = `${email}`;
-          var url = "http://" + req.headers.host + "/user/html-forgotpassword/" + reset_token;
+          var url = "http://" + req.headers.host + "/api/user/html-forgotpassword/" + reset_token;
           var mailOptions = {
             from: from_email,
             to: to_email,
