@@ -49,6 +49,7 @@ exports.delete = async (id) => {
 exports.getById = async (id) => {
   let condition = {
     deleted: 0,
+    id:id
   };
   return models.question.findOne({
     where: condition,
@@ -70,13 +71,19 @@ exports.getAll = async (data) => {
 
 //Get All Paging
 exports.getAllPaging = async(data) => { 
-    let condition = { 
-        deleted: 0
-    };
-    if(data.type) { 
-        condition.type = data.type;
-    };
-    return models.question.findAndCountAll({
-        where: condition
+  
+    let data1=data.query;
+    let condition={
+      ...data1
+
+    }
+    delete condition.page_index;
+    delete condition.page_size;
+    console.log("data",condition);
+    let question= await  models.question.findAndCountAll({
+      where: condition,
+      limit: data.limit,
+      offset: data.offset,
     })
+    return question;
 }

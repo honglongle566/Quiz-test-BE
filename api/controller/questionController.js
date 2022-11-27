@@ -14,7 +14,8 @@ exports.create = async(req, res) => {
         if(req.user.role == 2 ||req.user.role == 0){
             req.body = { 
                 ...req.body,
-                user_id: user.id
+                user_id: user.id,
+                deleted:0
             };
             let question = await questionService.create(req.body);
             res.json(responseSuccess(question));
@@ -36,9 +37,9 @@ exports.update = async(req, res) => {
             ...req.body,
             user_id: user.id
         };
-        if(user.type.role == 2){
+        if(user.role == 2|| user.role==0){
             let question = await questionService.update(id, req.body);
-            res.json(responseSuccess(question));
+            res.json(responseSuccess(true));
         }else{
             res.json('Not Allowed!!!');
         }
@@ -56,8 +57,8 @@ exports.delete = async(req, res) => {
         let data = {
             user_id: user.id
         };
-        if(req.user.role == 2){
-            let question = await questionService.delete(id, data);
+        if(user.role == 2||user.role==0){
+            let question = await questionService.delete(id);
             res.json(responseSuccess(question));
         }else{
             res.json('Not Allowed!!!');
@@ -112,14 +113,19 @@ exports.getAllPaging = async(req, res) => {
         const query = req.query?req.query:null;
         const condition = {
             limit,
-            offset,query
+            offset,
+            query
         };
         await questionService.getAllPaging(condition).then((result) => {
+            console.log(result);
             const response = Paginator.getPagingData(result, page, limit);
             const questionRes = response.rows.map(item => {
                 return item;
             });
-            res.json(responseSuccess(questionRes));
+            res.json(responseSuccess( {total_items: response.total_items, 
+                total_pages: response.total_pages, 
+                current_page: response.current_page, 
+                data: response.rows}));
         }).catch((err) => {
             console.log(err);
             res.json(responseWithError(ErrorCodes.ERROR_CODE_SYSTEM_ERROR, 'error', err));
