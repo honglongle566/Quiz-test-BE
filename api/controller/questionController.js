@@ -8,18 +8,19 @@ const { ErrorCodes } = require('../helper/constants');
 const { condition } = require('sequelize');
 
 //Create question 
-exports.create = async(req, res) => {
+exports.create = async (req, res) => {
     try {
         var user = await checkAccessTokenorNot(req);
-        if(req.user.role == 2){
-            req.body = { 
+        if (req.user.role == 2) {
+            req.body = {
                 ...req.body,
-                user_id: user.id
+                user_id: user.id,
+                deleted: 0
             };
             let question = await questionService.create(req.body);
             res.json(responseSuccess(question));
-        }else{
-        res.json('Not Allowed!!!');
+        } else {
+            res.json('Not Allowed!!!');
         }
     } catch (err) {
         console.log(err);
@@ -28,18 +29,18 @@ exports.create = async(req, res) => {
 };
 
 //Udpate Question
-exports.update = async(req, res) => {
+exports.update = async (req, res) => {
     try {
         var user = await checkAccessTokenorNot(req);
         const id = req.params.id;
-        req.body = { 
+        req.body = {
             ...req.body,
             user_id: user.id
         };
-        if(req.user.role == 2){
+        if (user.role == 2 || user.role == 0) {
             let question = await questionService.update(id, req.body);
-            res.json(responseSuccess(question));
-        }else{
+            res.json(responseSuccess(true));
+        } else {
             res.json('Not Allowed!!!');
         }
     } catch (err) {
@@ -49,18 +50,17 @@ exports.update = async(req, res) => {
 };
 
 //Delete Question
-exports.delete = async(req, res) => {
+exports.delete = async (req, res) => {
     try {
         var user = await checkAccessTokenorNot(req);
         const id = req.params.id;
-        req.body = {
-            ...req.body,
+        let data = {
             user_id: user.id
-        }
-        if(req.user.role == 2){
-            let question = await questionService.delete(id, req.body);
+        };
+        if (user.role == 2 || user.role == 0) {
+            let question = await questionService.delete(id);
             res.json(responseSuccess(question));
-        }else{
+        } else {
             res.json('Not Allowed!!!');
         }
     } catch (err) {
@@ -70,18 +70,13 @@ exports.delete = async(req, res) => {
 };
 
 //Get By Id
-exports.getById = async(req, res) => {
+exports.getById = async (req, res) => {
     try {
         const id = req.params.id;
         questionService.getById(id).then((result) => {
-            res.status(200).json({ success: true, code: 0, message: messageConstants.EXAM_FOUND, data: result });
+            res.json(responseSuccess(result))
         }).catch((err) => {
-            res.send({
-                error: {
-                    status: err.status || 500,
-                    message: err.message
-                }
-            });
+            res.json(responseWithError(err, 'error' || ErrorCodes.ERROR_CODE_SYSTEM_ERROR, 'error', err));
         });
     } catch (err) {
         console.log(err);
@@ -90,7 +85,7 @@ exports.getById = async(req, res) => {
 };
 
 //Get All
-exports.getAll = async(req, res) => {
+exports.getAll = async (req, res) => {
     try {
         const data = req.query;
         questionService.getAll(data).then((data) => {
@@ -105,22 +100,20 @@ exports.getAll = async(req, res) => {
 };
 
 //Get All Paging
-exports.getAllPaging = async(req, res) => {
+exports.getAllPaging = async (req, res) => {
     try {
         const page = parseInt(req.query.page_index) || 1;
         const size = parseInt(req.query.page_size);
         const { limit, offset } = Paginator.getPagination(page, size);
-        const query = req.query?req.query:null;
+        const query = req.query ? req.query : null;
         const condition = {
             limit,
-            offset,query
+            offset,
+            query
         };
         await questionService.getAllPaging(condition).then((result) => {
             const response = Paginator.getPagingData(result, page, limit);
-            const questionRes = response.rows.map(item => {
-                return item;
-            });
-            res.json(responseSuccess(questionRes));
+            res.json(responseSuccess(response));
         }).catch((err) => {
             console.log(err);
             res.json(responseWithError(ErrorCodes.ERROR_CODE_SYSTEM_ERROR, 'error', err));

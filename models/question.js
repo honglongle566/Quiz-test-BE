@@ -32,6 +32,10 @@ module.exports = (sequelize, DataTypes) => {
         correct_answer: {
             type: Sequelize.STRING
         },
+        has_mul_correct_answers: {
+            type: Sequelize.INTEGER(2),
+            defaultValue: 0,
+        },
         matching_correct: {
             type: Sequelize.STRING
         },

@@ -76,6 +76,9 @@ exports.getAllPaging = async (data, keyword) => {
     };
     return models.group_question.findAndCountAll({
         where: condition,
-        ...data
+        ...data,
+        order: [
+            ['id', 'DESC'],
+        ],
     })
 };
