@@ -84,12 +84,13 @@ exports.getAllPaging = async (req, res) => {
     try {
         const page = parseInt(req.query.page_index) || 1;
         const size = parseInt(req.query.page_size);
+        const keyword = req.query.keyword || ''
         const { limit, offset } = Paginator.getPagination(page, size);
         const condition = {
             limit,
             offset
         };
-        await group_questionService.getAllPaging(condition).then((result) => {
+        await group_questionService.getAllPaging(condition, keyword).then((result) => {
             const response = Paginator.getPagingData(result, page, limit);
             res.json(responseSuccess(response));
         }).catch((err) => {

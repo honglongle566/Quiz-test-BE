@@ -1,4 +1,5 @@
 const models = require('../../models');
+const { Op } = require("sequelize");
 const { ErrorCodes } = require('../helper/constants');
 const messageConstants = require('../constant/messageConstants');
 const { ChainCondition } = require('express-validator/src/context-items');
@@ -46,15 +47,9 @@ exports.update = async (id, category) => {
 };
 
 exports.delete = async (id) => {
-    var delete_option = {
-        field: "deleted",
-        deleted: 1,
-        updated_date: Date()
-    }
-    return models.category.update(delete_option, {
+    return models.category.destroy({
         where: {
             id: id,
-            deleted: 0
         }
     })
 };
@@ -69,13 +64,34 @@ exports.getAll = async (data) => {
     })
 };
 
-exports.getAllPaging = async (data) => {
+exports.getAllPaging = async (data, keyword) => {
     let condition = {
-        deleted: 0
+        deleted: 0,
     };
-    return models.category.findAndCountAll({
+    if (keyword) {
+        condition.name = {
+            [Op.like]: `%${keyword}%`,
+        }
+    }
+    const { count, rows } = await models.category.findAndCountAll({
         where: condition,
-        include: [models.subject],
         ...data,
+        order: [
+            ['id', 'DESC'],
+        ],
     })
+    const rowsJSON = JSON.parse(JSON.stringify(rows))
+    const categoryIds = rowsJSON.map(item => {
+        return item.id
+    })
+    const subject = await models.subject.findAll({
+        where: {
+            category_id: { [Op.in]: categoryIds },
+            ...condition
+        },
+    })
+    const rowsCategorySubject = rowsJSON.map(item => {
+        return { ...item, subjects: JSON.parse(JSON.stringify(subject)).filter(sub => sub.category_id === item.id) }
+    });
+    return { count, rows: rowsCategorySubject }
 };
