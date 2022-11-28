@@ -77,6 +77,8 @@ exports.getAllPaging = async(data) => {
       ...data1
 
     }
+    
+    delete condition.name ;
     delete condition.page_index;
     delete condition.page_size;
     console.log("data",condition);

@@ -19,6 +19,7 @@ module.exports = (sequelize, DataTypes) => {
         },
         question: {
             type: Sequelize.TEXT('long')
+            
         },
         time_limit: {
             type: Sequelize.INTEGER(5)
