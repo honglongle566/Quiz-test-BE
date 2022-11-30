@@ -56,25 +56,28 @@ exports.getById = async(id) => {
 //Get All
 exports.getAll = async(data) => {
     let condition = { 
-        deleted : 0
+        deleted : 0,
+        ...data
     };
-    if(data.code_type){
-        condition.code_type = data.code_type
-    };
-    return models.examination_room.findAll({
-        where: condition
+   
+    return models.examination_room.findAndCountAll({
+        where: condition,
+       
     });
 };
 
 //Get All Paging
 exports.getAllPaging = async(data) => {
     let condition = { 
-        deleted: 0
+        deleted: 0,
+        ...data.query
     };
-    if(data.code_type){
-        condition.code_type = data.code_type
-    };
+    delete condition.page_index;
+    delete condition.page_size;
+    console.log("condition",condition);
     return models.examination_room.findAndCountAll({
-        where: condition
+        where: condition,
+        limit: data.limit,
+        offset: data.offset,
     })
 };
