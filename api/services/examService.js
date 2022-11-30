@@ -12,7 +12,7 @@ exports.create = async (exam) => {
             deleted: 0
         }
     });
-    if (checkNameExisting) {
+    if (!checkNameExisting) {
         return models.exam.create(exam);
     } else {
         return Promise.reject({ status: ErrorCodes.ERROR_CODE_ITEM_EXIST, message: messageConstants.EXAM_EXIT_NAME });
@@ -59,10 +59,10 @@ exports.getById = async(id) => {
 //Get All
 exports.getAll = async(data) => {
     let condition = { 
-        deleted : 0
+        deleted : 0,
+        ...data.query
     };
     return models.exam.findAll({
-        data,
         where: condition
     });
 };
@@ -70,9 +70,16 @@ exports.getAll = async(data) => {
 //Get All Paging
 exports.getAllPaging = async(data) => {
     let condition = { 
-        deleted: 0
+        deleted: 0,
+        ...data.query
     };
-    return models.exam.findAndCountAll(data,{
-        where: condition
+    
+    delete condition.page_index;
+  delete condition.page_size;
+  console.log("condition",condition);
+    return models.exam.findAndCountAll({
+        where: condition,
+    limit: data.limit,
+    offset: data.offset,
     })
 };

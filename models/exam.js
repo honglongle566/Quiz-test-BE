@@ -18,7 +18,13 @@ module.exports = (sequelize, DataTypes) => {
             type: Sequelize.STRING(255)
         },
         question: {
-            type: Sequelize.TEXT('long')
+            type: DataTypes.TEXT('long'),
+            get: function() { if (typeof this.getDataValue("question")!== 'undefined')
+              return JSON.parse(this.getDataValue("question"));
+            },
+            set: function(value) {
+              return this.setDataValue("question", JSON.stringify(value));
+            }
             
         },
         time_limit: {

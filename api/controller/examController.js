@@ -11,7 +11,7 @@ const { condition } = require('sequelize');
 exports.create = async(req, res) => {
     try {   
         var user = await checkAccessTokenorNot(req);
-        if(req.user.role == 2){
+        if(user.role==2||user.role==0){
             req.body = {
                 ...req.body,
                 subject_id: req.body.subject_id,
@@ -37,7 +37,7 @@ exports.update = async(req, res) => {
             ...req.body,
             user_id: user.id
         };
-        if(req.user.role == 2){
+        if(user.role==2||user.role==0){
             let exam = await examService.update(id,req.body);
             res.json(responseSuccess(exam));
         }else{
@@ -57,7 +57,7 @@ exports.delete = async(req, res) => {
         let data = {
             user_id: user.id
         };
-        if(req.user.role == 2){
+        if(req.user.role == 2||req.user.role==0){
             let exam = await examService.delete(id, data);
             res.json(responseSuccess(exam));
         }else{
@@ -111,16 +111,19 @@ exports.getAllPaging = async(req, res) => {
         const page = parseInt(req.query.page_index) || 1;
         const size = parseInt(req.query.page_size);
         const { limit, offset } = Paginator.getPagination(page, size);
+        const query = req.query ? req.query : null;
         const condition = {
             limit,
-            offset
+            offset,
+            query
         };
         await examService.getAllPaging(condition).then((result) => {
             const response = Paginator.getPagingData(result, page, limit);
-            const examRes = response.rows.map(item => {
-                return item;
-            });
-            res.json(responseSuccess(examRes));
+            
+            res.json(responseSuccess({total_items: response.total_items, 
+                total_pages: response.total_pages, 
+                current_page: response.current_page, 
+                data: response.rows}));
         }).catch((err) => {
             console.log(err);
             res.json(responseWithError(ErrorCodes.ERROR_CODE_SYSTEM_ERROR, 'error', err));
