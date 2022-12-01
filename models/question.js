@@ -25,11 +25,12 @@ module.exports = (sequelize, DataTypes) => {
         },
         answer: {
             type: DataTypes.TEXT('long'),
-            get: function() { if (typeof this.getDataValue("answer")!== 'undefined')
-              return JSON.parse(this.getDataValue("answer"));
+            get: function () {
+                if (typeof this.getDataValue("answer") !== 'undefined')
+                    return JSON.parse(this.getDataValue("answer"));
             },
-            set: function(value) {
-              return this.setDataValue("answer", JSON.stringify(value));
+            set: function (value) {
+                return this.setDataValue("answer", JSON.stringify(value));
             }
 
         },
@@ -37,7 +38,14 @@ module.exports = (sequelize, DataTypes) => {
             type: Sequelize.INTEGER(2)
         },
         correct_answer: {
-            type: Sequelize.STRING
+            type: DataTypes.TEXT('long'),
+            get: function () {
+                if (typeof this.getDataValue("correct_answer") !== 'undefined')
+                    return JSON.parse(this.getDataValue("correct_answer"));
+            },
+            set: function (value) {
+                return this.setDataValue("correct_answer", JSON.stringify(value));
+            }
         },
         has_mul_correct_answers: {
             type: Sequelize.INTEGER(2),
@@ -45,29 +53,32 @@ module.exports = (sequelize, DataTypes) => {
         },
         matching_correct: {
             type: DataTypes.TEXT('long'),
-            get: function() { if (typeof this.getDataValue("matching_correct")!== 'undefined')
-              return JSON.parse(this.getDataValue("matching_correct"));
+            get: function () {
+                if (typeof this.getDataValue("matching_correct") !== 'undefined')
+                    return JSON.parse(this.getDataValue("matching_correct"));
             },
-            set: function(value) {
-              return this.setDataValue("matching_correct", JSON.stringify(value));
+            set: function (value) {
+                return this.setDataValue("matching_correct", JSON.stringify(value));
             }
         },
         matching_answers: {
             type: DataTypes.TEXT('long'),
-            get: function() { if (typeof this.getDataValue("matching_answers")!== 'undefined')
-              return JSON.parse(this.getDataValue("matching_answers"));
+            get: function () {
+                if (typeof this.getDataValue("matching_answers") !== 'undefined')
+                    return JSON.parse(this.getDataValue("matching_answers"));
             },
-            set: function(value) {
-              return this.setDataValue("matching_answers", JSON.stringify(value));
+            set: function (value) {
+                return this.setDataValue("matching_answers", JSON.stringify(value));
             }
         },
         fill_blank_correct_answer: {
             type: DataTypes.TEXT('long'),
-            get: function() { if (typeof this.getDataValue("fill_blank_correct_answer")!== 'undefined')
-              return JSON.parse(this.getDataValue("fill_blank_correct_answer"));
+            get: function () {
+                if (typeof this.getDataValue("fill_blank_correct_answer") !== 'undefined')
+                    return JSON.parse(this.getDataValue("fill_blank_correct_answer"));
             },
-            set: function(value) {
-              return this.setDataValue("fill_blank_correct_answer", JSON.stringify(value));
+            set: function (value) {
+                return this.setDataValue("fill_blank_correct_answer", JSON.stringify(value));
             }
         },
         status: {

@@ -72,9 +72,21 @@ exports.getAllPaging = async (data) => {
   delete condition.page_index;
   delete condition.page_size;
   delete condition.name;
+  delete condition.exam_id;
   if (data.query?.name) {
     condition.name = {
       [Op.like]: `%${data.query.name}%`,
+    }
+  }
+  if (data.query?.exam_id) {
+    const exam = await models.exam.findOne({
+      where: {
+        id: data.query.exam_id
+      }
+    })
+    const listQuestion = JSON.parse(exam.dataValues?.question) || [];
+    condition.id = {
+      [Op.in]: listQuestion,
     }
   }
   return models.question.findAndCountAll({
