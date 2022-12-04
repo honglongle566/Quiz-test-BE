@@ -2,7 +2,7 @@ const { examination_room } = require('../../models');
 const models = require('../../models');
 const messageConstants = require('../constant/messageConstants');
 const { ErrorCodes } = require('../helper/constants');
-
+models.examination_room.belongsTo(models.exam,{ foreignKey: "exam_id"});
 //Create
 exports.create = async(examination_room) => { 
     var checkNameExisting = await models.examination_room.findOne({
@@ -77,6 +77,12 @@ exports.getAllPaging = async(data) => {
     console.log("condition",condition);
     return models.examination_room.findAndCountAll({
         where: condition,
+        include:[
+            {
+                model: models.exam,
+              
+            }
+        ],
         limit: data.limit,
         offset: data.offset,
     })

@@ -9,12 +9,19 @@ const Paginator = require('../commons/paginator');
 //Create Exammintaion Room 
 exports.create = async(req, res) => {
     try {
+        var result = '';
+        var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        var charactersLength = characters.length;
+        for (var i = 0; i < 10; i++) {
+            result += characters.charAt(Math.floor(Math.random() * charactersLength));
+        }
         var user = await checkAccessTokenorNot(req);
         if(req.user.role == 2||req.user.role ==0){
             req.body = { 
                 ...req.body,
                 exam_id: req.body.exam_id,
-                user_id: user.id
+                user_id: user.id,
+                code_room: result
             };
             let examination = await examination_roomService.create(req.body);
             res.json(responseSuccess(examination));
@@ -111,7 +118,6 @@ exports.getAll = async(req, res)=>{
 //Get All Paging
 exports.getAllPaging = async(req, res) => {
     try {
-        console.log(11111111);
         const page = parseInt(req.query.page_index) || 1;
         const size = parseInt(req.query.page_size);
         const { limit, offset } = Paginator.getPagination(page, size);

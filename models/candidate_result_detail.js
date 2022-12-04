@@ -15,7 +15,13 @@ module.exports = (sequelize, DataTypes) => {
             type: Sequelize.INTEGER(4)
         },
         answer_detail: {
-            type: Sequelize.STRING
+            type: DataTypes.TEXT('long'),
+            get: function() { if (typeof this.getDataValue("answer_detail")!== 'undefined')
+              return JSON.parse(this.getDataValue("answer_detail"));
+            },
+            set: function(value) {
+              return this.setDataValue("answer_detail", JSON.stringify(value));
+            }
         },
         status: {
             type: Sequelize.INTEGER(2),
