@@ -114,13 +114,7 @@ exports.getAllPaging = async (req, res) => {
         await questionService.getAllPaging(condition).then((result) => {
             console.log(result);
             const response = Paginator.getPagingData(result, page, limit);
-            const questionRes = response.rows.map(item => {
-                return item;
-            });
-            res.json(responseSuccess( {total_items: response.total_items, 
-                total_pages: response.total_pages, 
-                current_page: response.current_page, 
-                data: response.rows}));
+            res.json(responseSuccess(response))
         }).catch((err) => {
             console.log(err);
             res.json(responseWithError(ErrorCodes.ERROR_CODE_SYSTEM_ERROR, 'error', err));

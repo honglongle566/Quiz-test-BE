@@ -2,27 +2,66 @@ const models = require('../../models');
 const { ErrorCodes } = require('../helper/constants');
 const messageConstants = require('../constant/messageConstants');
 const { ChainCondition } = require('express-validator/src/context-items');
-models.exam.belongsTo(models.user,{ foreignKey: "user_id"});
+const { Op } = require("sequelize");
+const { question } = require('../../models');
+models.exam.belongsTo(models.user, { foreignKey: "user_id" });
 
 //Create exam
 exports.create = async (exam) => {
-    var checkNameExisting = await models.exam.findOne({
-        where: {
-            name: exam.name,
-            deleted: 0
-        }
-    });
-    if (!checkNameExisting) {
-        return models.exam.create(exam);
-    } else {
-        return Promise.reject({ status: ErrorCodes.ERROR_CODE_ITEM_EXIST, message: messageConstants.EXAM_EXIT_NAME });
-    }
+    return models.exam.create(exam);
 };
 
 
 //Update exam
-exports.update = async(id, examUpdate) => {
-    return models.exam.update(examUpdate,{
+exports.update = async (id, examUpdate) => {
+    return models.exam.update(examUpdate, {
+        where: {
+            id: id,
+            deleted: 0
+        }
+    });
+};
+exports.addQuestionsToExam = async (id, data) => {
+    const oldExam = await models.exam.findOne({
+        where: {
+            id: id,
+            deleted: 0
+        }
+    })
+    const questions = data.questions
+    const oldQuestion = oldExam.dataValues.question ? JSON.parse(oldExam.dataValues.question) : [];
+    const newQuestion = Array.from(new Set([...oldQuestion, ...questions]))
+    if (oldQuestion.length === newQuestion.length) {
+        return Promise.reject({ status: ErrorCodes.ERROR_CODE_ITEM_EXIST, message: 'EXAM_EXIST_QUESTION' });
+    }
+    const dataUpdate = {
+        question: newQuestion
+    }
+    return models.exam.update(dataUpdate, {
+        where: {
+            id: id,
+            deleted: 0
+        }
+    });
+};
+
+exports.removeQuestionsToExam = async (id, data) => {
+    const oldExam = await models.exam.findOne({
+        where: {
+            id: id,
+            deleted: 0
+        }
+    })
+    const questions = data.questions || []
+    const oldQuestion = oldExam.dataValues.question ? JSON.parse(oldExam.dataValues.question) : [];
+    const newQuestion = oldQuestion.filter(item => !questions.includes(item))
+    if (oldQuestion.length === newQuestion.length) {
+        return Promise.reject({ status: ErrorCodes.ERROR_CODE_ITEM_EXIST, message: 'ERROR_EXAM_REMOVE_QUESTION' });
+    }
+    const dataUpdate = {
+        question: newQuestion
+    }
+    return models.exam.update(dataUpdate, {
         where: {
             id: id,
             deleted: 0
@@ -31,13 +70,13 @@ exports.update = async(id, examUpdate) => {
 };
 
 //Delet exam
-exports.delete = async(id) => {
+exports.delete = async (id) => {
     var delete_option = {
         field: "deleted",
         deleted: 1,
         updated_date: Date()
     }
-    return models.exam.update(delete_option,{
+    return models.exam.update(delete_option, {
         where: {
             id: id,
             deleted: 0
@@ -46,20 +85,20 @@ exports.delete = async(id) => {
 };
 
 //Get By Id
-exports.getById = async(id) => {
+exports.getById = async (data) => {
     let condition = {
-        id: id,
+        ...data,
         deleted: 0
     };
-    return models.exam.findOne({
-        where:condition
+    return exam = await models.exam.findOne({
+        where: condition
     })
 };
 
 //Get All
-exports.getAll = async(data) => {
-    let condition = { 
-        deleted : 0,
+exports.getAll = async (data) => {
+    let condition = {
+        deleted: 0,
         ...data.query
     };
     return models.exam.findAll({
@@ -68,18 +107,25 @@ exports.getAll = async(data) => {
 };
 
 //Get All Paging
-exports.getAllPaging = async(data) => {
-    let condition = { 
+exports.getAllPaging = async (data) => {
+    let condition = {
         deleted: 0,
         ...data.query
     };
-    
     delete condition.page_index;
-  delete condition.page_size;
-  console.log("condition",condition);
+    delete condition.page_size;
+    delete condition.name;
+    if (data.query?.name) {
+        condition.name = {
+            [Op.like]: `%${data.query.name}%`,
+        }
+    }
     return models.exam.findAndCountAll({
         where: condition,
-    limit: data.limit,
-    offset: data.offset,
+        limit: data.limit,
+        offset: data.offset,
+        order: [
+            ['id', 'DESC'],
+        ],
     })
 };
