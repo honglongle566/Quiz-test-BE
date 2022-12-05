@@ -35,3 +35,16 @@ exports.login = async (data) =>{
     return b;
 
 }
+exports.update = async (id, data) => {
+    let question = await models.candidate.update(data, {
+      where: {
+        id: id,
+        deleted: 0,
+      },
+    });
+    if (question) {
+      return true;
+    } else {
+      return false;
+    }
+  };
