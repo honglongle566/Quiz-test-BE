@@ -49,7 +49,13 @@ exports.getById = async(id) => {
         deleted: 0
     };
     return models.examination_room.findOne({
-        where:condition
+        where:condition,
+        include: [
+            {
+                model:models.exam,
+                attributes: ['id', 'question']
+            }
+        ]
     })
 };
 

@@ -16,7 +16,7 @@ module.exports = (sequelize, DataTypes) => {
         },
         answer_detail: {
             type: DataTypes.TEXT('long'),
-            get: function() { 
+            get: function() {  if (typeof this.getDataValue("answer_detail") !== 'undefined')
               return JSON.parse(this.getDataValue("answer_detail"));
             },
             set: function(value) {
