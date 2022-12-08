@@ -1,13 +1,13 @@
 const examination_roomService = require('../services/examination_roomService');
-const {validationResult} = require("express-validator");
-const {checkAccessTokenorNot} = require("../middlewares/jwt_token");
-const { responseSuccess,responseWithError } = require('../helper/messageResponse');
+const { validationResult } = require("express-validator");
+const { checkAccessTokenorNot } = require("../middlewares/jwt_token");
+const { responseSuccess, responseWithError } = require('../helper/messageResponse');
 const messageConstants = require('../constant/messageConstants');
-const {ErrorCodes} = require('../helper/constants');
+const { ErrorCodes } = require('../helper/constants');
 const Paginator = require('../commons/paginator');
 
 //Create Exammintaion Room 
-exports.create = async(req, res) => {
+exports.create = async (req, res) => {
     try {
         var result = '';
         var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -16,16 +16,16 @@ exports.create = async(req, res) => {
             result += characters.charAt(Math.floor(Math.random() * charactersLength));
         }
         var user = await checkAccessTokenorNot(req);
-        if(req.user.role == 2||req.user.role ==0){
-            req.body = { 
+        if (req.user.role == 2 || req.user.role == 0) {
+            req.body = {
                 ...req.body,
                 exam_id: req.body.exam_id,
                 user_id: user.id,
-                code_room: result
+                link_room_exam: result
             };
             let examination = await examination_roomService.create(req.body);
             res.json(responseSuccess(examination));
-        }else{ 
+        } else {
             res.json('Not Allowed!!!');
         }
     } catch (err) {
@@ -35,18 +35,18 @@ exports.create = async(req, res) => {
 };
 
 //Update Examination Room
-exports.update = async(req, res) => {
+exports.update = async (req, res) => {
     try {
         var user = await checkAccessTokenorNot(req);
         const id = req.params.id;
-        req.body = { 
+        req.body = {
             ...req.body,
             user_id: user.id
         };
-        if(req.user.role == 2||req.user.role == 0) {
+        if (req.user.role == 2 || req.user.role == 0) {
             let exam = await examination_roomService.update(id, req.body)
             res.json(responseSuccess(exam));
-        }else{
+        } else {
             res.json('Not Allowed!!!');
         }
     } catch (err) {
@@ -56,17 +56,17 @@ exports.update = async(req, res) => {
 };
 
 //Delete Examination Room
-exports.delete = async(req, res) => {
+exports.delete = async (req, res) => {
     try {
         var user = await checkAccessTokenorNot(req);
         const id = req.params.id;
         let data = {
             user_id: user.id
         };
-        if(req.user.role == 2||req.user.role == 0){
+        if (req.user.role == 2 || req.user.role == 0) {
             let exam = await examination_roomService.delete(id, data);
             res.json(responseSuccess(exam));
-        }else{
+        } else {
             res.json('Not Allowed!!!');
         }
     } catch (err) {
@@ -76,7 +76,7 @@ exports.delete = async(req, res) => {
 };
 
 //Get By Id
-exports.getById = async(req, res) => {
+exports.getById = async (req, res) => {
     try {
         try {
             const id = req.params.id;
@@ -101,7 +101,7 @@ exports.getById = async(req, res) => {
 };
 
 //Get All
-exports.getAll = async(req, res)=>{
+exports.getAll = async (req, res) => {
     try {
         const data = req.query;
         examination_roomService.getAll(data).then((data) => {
@@ -116,12 +116,12 @@ exports.getAll = async(req, res)=>{
 };
 
 //Get All Paging
-exports.getAllPaging = async(req, res) => {
+exports.getAllPaging = async (req, res) => {
     try {
         const page = parseInt(req.query.page_index) || 1;
         const size = parseInt(req.query.page_size);
         const { limit, offset } = Paginator.getPagination(page, size);
-        const query = req.query?req.query: null;
+        const query = req.query ? req.query : null;
         const condition = {
             limit,
             offset,
@@ -129,11 +129,8 @@ exports.getAllPaging = async(req, res) => {
         };
         await examination_roomService.getAllPaging(condition).then((result) => {
             const response = Paginator.getPagingData(result, page, limit);
-            
-            res.json(responseSuccess({total_items: response.total_items, 
-                total_pages: response.total_pages, 
-                current_page: response.current_page, 
-                data: response.rows}));
+
+            res.json(responseSuccess(response));
         }).catch((err) => {
             console.log(err);
             res.json(responseWithError(ErrorCodes.ERROR_CODE_SYSTEM_ERROR, 'error', err));

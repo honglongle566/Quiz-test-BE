@@ -2,25 +2,16 @@ const { examination_room } = require('../../models');
 const models = require('../../models');
 const messageConstants = require('../constant/messageConstants');
 const { ErrorCodes } = require('../helper/constants');
-models.examination_room.belongsTo(models.exam,{ foreignKey: "exam_id"});
+const { Op } = require("sequelize");
+models.examination_room.belongsTo(models.exam, { foreignKey: "exam_id" });
 //Create
-exports.create = async(examination_room) => { 
-    var checkNameExisting = await models.examination_room.findOne({
-        where: { 
-            name: examination_room.name,
-            deleted: 0
-        }
-    });
-    if(!checkNameExisting){
-        return models.examination_room.create(examination_room);
-    }else{ 
-        return Promise.reject({status: ErrorCodes.ERROR_CODE_ITEM_EXIST, message: messageConstants.EXAMINATION_EXIT_NAME})
-    }
+exports.create = async (examination_room) => {
+    return models.examination_room.create(examination_room);
 };
 
 //Update
-exports.update = async(id, examinationUpdate) => { 
-    return models.examination_room.update(examinationUpdate,{
+exports.update = async (id, examinationUpdate) => {
+    return models.examination_room.update(examinationUpdate, {
         where: {
             id: id,
             deleted: 0
@@ -28,13 +19,13 @@ exports.update = async(id, examinationUpdate) => {
     });
 }
 //Delete
-exports.delete = async(id) => {
+exports.delete = async (id) => {
     var delete_option = {
         field: "deleted",
         deleted: 1,
         updated_date: Date()
     }
-    return models.examination_room.update(delete_option,{
+    return models.examination_room.update(delete_option, {
         where: {
             id: id,
             deleted: 0
@@ -43,12 +34,12 @@ exports.delete = async(id) => {
 };
 
 //Get By Id
-exports.getById = async(id) => {
+exports.getById = async (id) => {
     let condition = {
         id: id,
         deleted: 0
     };
-    return models.examination_room.findOne({
+    const exam_room = await models.examination_room.findOne({
         where:condition,
         include: [
             {
@@ -57,36 +48,45 @@ exports.getById = async(id) => {
             }
         ]
     })
+    const exam_roomJSON = JSON.parse(JSON.stringify(exam_room))
+    const questions = await models.question.findAll({
+        where: {
+            id: {
+                [Op.in]: exam_roomJSON?.exam?.question || [],
+            }
+        }
+    })
+    const questionJSON = JSON.parse(JSON.stringify(questions))
+    return {...exam_roomJSON, questions: questionJSON}
 };
 
 //Get All
-exports.getAll = async(data) => {
-    let condition = { 
-        deleted : 0,
+exports.getAll = async (data) => {
+    let condition = {
+        deleted: 0,
         ...data
     };
-   
+
     return models.examination_room.findAndCountAll({
         where: condition,
-       
+
     });
 };
 
 //Get All Paging
-exports.getAllPaging = async(data) => {
-    let condition = { 
+exports.getAllPaging = async (data) => {
+    let condition = {
         deleted: 0,
         ...data.query
     };
     delete condition.page_index;
     delete condition.page_size;
-    console.log("condition",condition);
     return models.examination_room.findAndCountAll({
         where: condition,
-        include:[
+        include: [
             {
                 model: models.exam,
-              
+
             }
         ],
         limit: data.limit,

@@ -38,13 +38,14 @@ exports.signRefreshToken = (req, res, next) => {
 
 exports.checkAccessToken = async (req, res, next) => {
     try {
-        const token = req.headers.authorization.split(" ")[1];
-        const decodedToken = jwt.verify(token, "" + process.env.ACCESS_TOKEN_SECRET);
-        const user_id = decodedToken.user_id ? decodedToken.user_id : null;
+        const authHeader = req.header('Authorization')
+        const token = authHeader && authHeader.split(' ')[1]
+        if (!token)
+            res.json(responseWithError(ErrorCodes.ERROR_CODE_UNAUTHORIZED, "Access token not found"));
+        const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET)
         let user = await models.user.findOne({
             where: {
-                id: decodedToken.id,
-                // user_id: user_id
+                id: decoded.userId,
             },
             attributes: [
                 'id',
@@ -56,8 +57,6 @@ exports.checkAccessToken = async (req, res, next) => {
             ]
         });
         req.user = user;
-        // const permission = await checkPermission(req.user.type);
-        // req.permission = permission;
         next();
     } catch (err) {
         res.json(responseWithError(ErrorCodes.ERROR_CODE_UNAUTHORIZED, "Invalid or expired token provided!", err.message));
@@ -65,30 +64,28 @@ exports.checkAccessToken = async (req, res, next) => {
 };
 
 exports.checkAccessTokenorNot = async (req, res) => {
+    const authHeader = req.header('Authorization')
+    const token = authHeader && authHeader.split(' ')[1]
+    if (!token)
+        res.json(responseWithError(ErrorCodes.ERROR_CODE_UNAUTHORIZED, "Access token not found"));
     try {
-        if (!req.headers.authorization) {
-            return null;
-        } else {
-            const token = req.headers.authorization.split(" ")[1];
-            const decodedToken = jwt.verify(token,"" + process.env.ACCESS_TOKEN_SECRET);
+        const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET)
         let user = await models.user.findOne({
             where: {
-                id: decodedToken.id,
-                email: decodedToken.email ? decodedToken.email : null
+                id: decoded.userId,
             },
             attributes: [
                 'id',
+                'full_name',
                 'user_name',
-                'role',
-                'email'
+                'phone',
+                'email',
+                'role'
             ]
         });
-        const response = user;
-        return response;
-        }
+        return user;
     } catch (err) {
-        console.log(err);
-        return res.json(responseWithError(ErrorCodes.ERROR_CODE_UNAUTHORIZED, "Invalid or expired token provided!", err.message));
+        res.json(responseWithError(ErrorCodes.ERROR_CODE_UNAUTHORIZED, "Invalid or expired token provided!", err.message));
     }
 };
 

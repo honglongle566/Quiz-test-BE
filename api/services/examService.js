@@ -5,6 +5,7 @@ const { ChainCondition } = require('express-validator/src/context-items');
 const { Op } = require("sequelize");
 const { question } = require('../../models');
 models.exam.belongsTo(models.user, { foreignKey: "user_id" });
+models.exam.belongsTo(models.subject, { foreignKey: "subject_id" });
 
 //Create exam
 exports.create = async (exam) => {
@@ -124,6 +125,11 @@ exports.getAllPaging = async (data) => {
         where: condition,
         limit: data.limit,
         offset: data.offset,
+        include: [
+            {
+                model: models.subject,
+            }
+        ],
         order: [
             ['id', 'DESC'],
         ],

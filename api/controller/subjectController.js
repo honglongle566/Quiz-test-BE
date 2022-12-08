@@ -8,6 +8,24 @@ const { responseSuccess, responseWithError } = require('../helper/messageRespons
 const { ErrorCodes } = require('../helper/constants');
 const { condition } = require('sequelize');
 
+exports.getAll = async (req, res) => {
+    try {
+        const data = {
+            ...req.query,
+            user_id: req.user.id
+        };
+        subjectService.getAll(data).then((data) => {
+            res.json(responseSuccess(data));
+        }).catch((err) => {
+            res.json(responseWithError(ErrorCodes.ERROR_CODE_SYSTEM_ERROR, 'error', err));
+        });
+    } catch (err) {
+        console.log(err);
+        res.json(responseWithError(err, 'error' || ErrorCodes.ERROR_CODE_SYSTEM_ERROR, 'error', err));
+
+    }
+};
+
 exports.create = async (req, res) => {
     try {
         if (req.user.role == 2) {

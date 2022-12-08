@@ -2,6 +2,9 @@ const models = require('../../models');
 const { ErrorCodes } = require('../helper/constants');
 const messageConstants = require('../constant/messageConstants');
 const { ChainCondition } = require('express-validator/src/context-items');
+const { Op } = require("sequelize");
+models.category.hasMany(models.subject, { foreignKey: 'category_id' })
+models.subject.belongsTo(models.category, { foreignKey: 'category_id' })
 
 exports.create = async (subject) => {
     var checkNameExisting = await models.subject.findOne({
@@ -81,5 +84,39 @@ exports.delete = async (id) => {
             id: id,
             deleted: 0
         }
+    })
+};
+
+exports.getAll = async (data) => {
+    const categories = await models.category.findAll({
+        where: {
+            user_id: data.user_id
+        }
+    })
+    const categoryJSON = JSON.parse(JSON.stringify(categories))
+    let condition = {
+        deleted: 0,
+        ...data,
+    };
+    delete condition.name
+    delete condition.user_id
+    if (data?.name) {
+        condition.name = {
+            [Op.like]: `%${data.name}%`,
+        }
+    }
+    if (!data?.category_id) {
+        condition.category_id = {
+            [Op.in]: categoryJSON.map(item => item.id) || [],
+        }
+    }
+    const subjects = await models.subject.findAll({
+        where: condition,
+    });
+
+    const subjectJSON = JSON.parse(JSON.stringify(subjects))
+
+    return subjectJSON.map(item => {
+        return { ...item, category: categoryJSON.find(c => c.id === item.category_id) }
     })
 };
