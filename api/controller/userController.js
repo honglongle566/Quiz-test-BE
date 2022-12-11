@@ -13,14 +13,11 @@ const { signAccessToken, signRefreshToken } = require("../middlewares/jwt_token"
 const fetch = (...args) => import('node-fetch').then(({ default: fetch }) => fetch(...args));
 const models = require('../../models');
 
-//Người dùng đăng ký tài khoản
 exports.getUser = async (req, res) => {
     try {
-        return res.json({ success: true, user: req?.user })
-        const user = await userService.getUser(req.user)
-        if (!user)
-            res.json(responseWithError(404, 'error', 'User not found'));
-        res.json({ success: true, user })
+        if (req.user)
+            return res.json({ success: true, user: req?.user })
+        res.json(responseWithError(404, 'error', 'User not found'));
     } catch (err) {
         console.log(err)
         res.json(responseWithError(err.status, 'error', err.message || ErrorCodes.ERROR_CODE_SYSTEM_ERROR, 'error', err));
@@ -36,7 +33,6 @@ exports.register = async (req, res, next) => {
     }
 };
 
-//Người dùng đăng nhập
 exports.login = async (req, res) => {
     try {
         let data = await userService.login(req.body);

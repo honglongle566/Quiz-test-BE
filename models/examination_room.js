@@ -19,6 +19,19 @@ module.exports = (sequelize, DataTypes) => {
             name: {
                 type: Sequelize.STRING(255)
             },
+            description: {
+                type: Sequelize.STRING(255)
+            },
+            time_limit: {
+                type: DataTypes.TEXT('long'),
+                get: function () {
+                    if (typeof this.getDataValue("time_limit") !== 'undefined')
+                        return JSON.parse(this.getDataValue("time_limit"));
+                },
+                set: function (value) {
+                    return this.setDataValue("time_limit", JSON.stringify(value));
+                }
+            },
             code_type: {
                 type: Sequelize.INTEGER(2),
             },

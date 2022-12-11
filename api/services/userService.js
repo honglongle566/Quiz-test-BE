@@ -5,9 +5,6 @@ const { signAccessToken, signRefreshToken } = require('../middlewares/jwt_token'
 const { ErrorCodes } = require('../helper/constants');
 const messageConstants = require('../constant/messageConstants');
 
-//Đăng ký tài khoản người dùng
-
-
 exports.getUser = async (account) => {
     const user = await models.user.findOne({
         where: {
@@ -46,8 +43,6 @@ exports.register = async (account) => {
     return { success: true, accessToken }
 }
 
-
-//Đăng nhập tài khoản người dùng 
 exports.login = async (account) => {
     const user = await models.user.findOne({
         where: {

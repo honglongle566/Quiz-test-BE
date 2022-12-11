@@ -1,4 +1,3 @@
-const { checkAccessTokenorNot } = require('../middlewares/jwt_token');
 const categoryService = require('../services/categoryService');
 const messageConstants = require('../constant/messageConstants');
 const Paginator = require('../commons/paginator');
@@ -9,11 +8,10 @@ const { condition } = require('sequelize');
 
 exports.update = async (req, res) => {
     try {
-        var user = await checkAccessTokenorNot(req);
         const id = req.params.id;
         req.body = {
             ...req.body,
-            user_id: user.id
+            user_id: req.user.id
         };
         if (req.user.role == 2) {
             let category = await categoryService.update(id, req.body);
@@ -29,10 +27,9 @@ exports.update = async (req, res) => {
 
 exports.delete = async (req, res) => {
     try {
-        var user = await checkAccessTokenorNot(req);
         const id = req.params.id;
         let data = {
-            user_id: user.id
+            user_id: req.user.id
         };
         if (req.user.role == 2) {
             let groupGuestion = await categoryService.delete(id, data);

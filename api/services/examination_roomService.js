@@ -40,10 +40,10 @@ exports.getById = async (id) => {
         deleted: 0
     };
     const exam_room = await models.examination_room.findOne({
-        where:condition,
+        where: condition,
         include: [
             {
-                model:models.exam,
+                model: models.exam,
                 attributes: ['id', 'question']
             }
         ]
@@ -57,7 +57,17 @@ exports.getById = async (id) => {
         }
     })
     const questionJSON = JSON.parse(JSON.stringify(questions))
-    return {...exam_roomJSON, questions: questionJSON}
+    return { ...exam_roomJSON, questions: questionJSON }
+};
+
+exports.getInfoCollect = async (link_room_exam) => {
+    const condition = {
+        link_room_exam: link_room_exam,
+        deleted: 0
+    };
+    return models.examination_room.findOne({
+        where: condition,
+    })
 };
 
 //Get All

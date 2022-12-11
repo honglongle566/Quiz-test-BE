@@ -6,6 +6,6 @@ const { checkAccessToken } = require('../middlewares/jwt_token');
 router.post('/', checkAccessToken, group_questionController.create);
 router.delete('/:id', checkAccessToken, group_questionController.delete);
 router.put('/:id', checkAccessToken, group_questionController.update);
-router.get('/', group_questionController.getAll);
-router.get('/all-paging', group_questionController.getAllPaging);
+router.get('/', checkAccessToken, group_questionController.getAll);
+router.get('/all-paging', checkAccessToken, group_questionController.getAllPaging);
 module.exports = router;

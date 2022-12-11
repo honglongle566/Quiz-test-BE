@@ -1,4 +1,3 @@
-const { checkAccessTokenorNot } = require('../middlewares/jwt_token');
 const subjectService = require('../services/subjectService');
 const categoryService = require('../services/categoryService');
 const messageConstants = require('../constant/messageConstants');

@@ -1,5 +1,4 @@
 const questionService = require('../services/questionService.js');
-const { checkAccessTokenorNot } = require('../middlewares/jwt_token');
 const messageConstants = require('../constant/messageConstants');
 const Paginator = require('../commons/paginator');
 const { validationResult } = require('express-validator');
@@ -10,11 +9,10 @@ const { condition } = require('sequelize');
 //Create question 
 exports.create = async (req, res) => {
     try {
-        var user = await checkAccessTokenorNot(req);
         if (req.user.role == 2) {
             req.body = {
                 ...req.body,
-                user_id: user.id,
+                user_id: req.user.id,
                 deleted: 0
             };
             let question = await questionService.create(req.body);
@@ -31,13 +29,12 @@ exports.create = async (req, res) => {
 //Udpate Question
 exports.update = async (req, res) => {
     try {
-        var user = await checkAccessTokenorNot(req);
         const id = req.params.id;
         req.body = {
             ...req.body,
-            user_id: user.id
+            user_id: req.user.id
         };
-        if (user.role == 2 || user.role == 0) {
+        if (req.user.role == 2 || req.user.role == 0) {
             let question = await questionService.update(id, req.body);
             res.json(responseSuccess(true));
         } else {
@@ -52,12 +49,11 @@ exports.update = async (req, res) => {
 //Delete Question
 exports.delete = async (req, res) => {
     try {
-        var user = await checkAccessTokenorNot(req);
         const id = req.params.id;
         let data = {
-            user_id: user.id
+            user_id: req.user.id
         };
-        if (user.role == 2 || user.role == 0) {
+        if (req.user.role == 2 || req.user.role == 0) {
             let question = await questionService.delete(id);
             res.json(responseSuccess(question));
         } else {

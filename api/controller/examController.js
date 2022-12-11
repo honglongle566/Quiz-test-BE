@@ -1,4 +1,3 @@
-const { checkAccessTokenorNot } = require('../middlewares/jwt_token');
 const examService = require('../services/examService');
 const questionService = require('../services/questionService');
 const messageConstants = require('../constant/messageConstants');
@@ -10,12 +9,11 @@ const { ErrorCodes } = require('../helper/constants');
 //Create exam
 exports.create = async (req, res) => {
     try {
-        var user = await checkAccessTokenorNot(req);
-        if (user.role == 2 || user.role == 0) {
+        if (req.user.role == 2 || req.user.role == 0) {
             req.body = {
                 ...req.body,
                 subject_id: req.body.subject_id,
-                user_id: user.id
+                user_id: req.user.id
             };
             let exam = await examService.create(req.body);
             res.json(responseSuccess(exam));
@@ -51,13 +49,12 @@ exports.createQuestionByExam = async (req, res) => {
 //Update exam
 exports.update = async (req, res) => {
     try {
-        var user = await checkAccessTokenorNot(req);
         const id = req.params.id;
         req.body = {
             ...req.body,
-            user_id: user.id
+            user_id: req.user.id
         };
-        if (user.role == 2 || user.role == 0) {
+        if (req.user.role == 2 || req.user.role == 0) {
             let exam = await examService.update(id, req.body);
             res.json(responseSuccess(exam));
         } else {
@@ -110,10 +107,9 @@ exports.removeQuestionsToExam = async (req, res) => {
 //Delete exam
 exports.delete = async (req, res) => {
     try {
-        var user = await checkAccessTokenorNot(req);
         const id = req.params.id;
         let data = {
-            user_id: user.id
+            user_id: req.user.id
         };
         if (req.user.role == 2 || req.user.role == 0) {
             let exam = await examService.delete(id, data);
