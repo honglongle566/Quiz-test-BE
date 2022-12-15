@@ -23,23 +23,30 @@ exports.getUser = async (req, res) => {
         res.json(responseWithError(err.status, 'error', err.message || ErrorCodes.ERROR_CODE_SYSTEM_ERROR, 'error', err));
     }
 };
-exports.register = async (req, res, next) => {
+exports.register = async (req, res) => {
     try {
         const data = await userService.register(req.body)
-        res.json(responseSuccess(data))
+        if (data) {
+            return res.json(responseSuccess(data))
+        }
+        res.json(responseWithError(ErrorCodes.ERROR_CODE_EMAIL_EXIST, 'EMAIL_EXIST'));
     } catch (err) {
         console.log(err);
-        return next(err);
+        res.json(responseWithError(ErrorCodes.ERROR_CODE_SYSTEM_ERROR, 'SYSTEM_ERROR'));
     }
 };
 
 exports.login = async (req, res) => {
     try {
         let data = await userService.login(req.body);
-        res.json(responseSuccess(data))
+        if (data) {
+            return res.json(responseSuccess(data))
+        }
+        res.json(responseWithError(ErrorCodes.ERROR_CODE_INVALID_USERNAME_OR_PASSWORD, 'INVALID_USERNAME_OR_PASSWORD'));
+
     } catch (err) {
         console.log(err);
-        res.json(responseWithError(err.status, 'error', err.message || ErrorCodes.ERROR_CODE_SYSTEM_ERROR, 'error', err));
+        res.json(responseWithError(ErrorCodes.ERROR_CODE_SYSTEM_ERROR, 'SYSTEM_ERROR'));
     }
 
 };

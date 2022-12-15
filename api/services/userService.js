@@ -5,21 +5,6 @@ const { signAccessToken, signRefreshToken } = require('../middlewares/jwt_token'
 const { ErrorCodes } = require('../helper/constants');
 const messageConstants = require('../constant/messageConstants');
 
-exports.getUser = async (account) => {
-    const user = await models.user.findOne({
-        where: {
-            deleted: 0,
-            id: account.id
-        },
-        attributes: ['user', 'email']
-    });
-    if (user) {
-        return Promise.resolve({
-            message: 'EMAIL_EXIST',
-        });
-    }
-    return { success: true, user }
-}
 exports.register = async (account) => {
     const user = await models.user.findOne({
         where: {
@@ -28,9 +13,7 @@ exports.register = async (account) => {
         }
     });
     if (user) {
-        return Promise.resolve({
-            message: 'EMAIL_EXIST',
-        });
+        return
     }
     const hashedPassword = await argon2.hash(account.password)
     account.password = hashedPassword;
@@ -40,7 +23,7 @@ exports.register = async (account) => {
         { userId: newUser.dataValues.id },
         process.env.ACCESS_TOKEN_SECRET
     )
-    return { success: true, accessToken }
+    return {accessToken} 
 }
 
 exports.login = async (account) => {
@@ -51,21 +34,15 @@ exports.login = async (account) => {
         }
     })
     if (!user)
-        return Promise.resolve({
-            success: false,
-            message: 'Incorrect username or password',
-        });
+        return 
     const passwordValid = await argon2.verify(user.dataValues.password, account.password)
     if (!passwordValid)
-        return Promise.resolve({
-            success: false,
-            message: 'Incorrect username or password',
-        });
+        return 
     const accessToken = jwt.sign(
         { userId: user.dataValues.id },
         process.env.ACCESS_TOKEN_SECRET
     )
-    return { success: true, accessToken }
+    return {accessToken}
 };
 
 

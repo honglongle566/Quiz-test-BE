@@ -95,6 +95,29 @@ exports.getById = async (req, res) => {
         res.json(responseWithError(err, 'error' || ErrorCodes.ERROR_CODE_SYSTEM_ERROR, 'error', err));
     }
 };
+exports.getExamQuestion = async (req, res) => {
+    try {
+        try {
+            const link_room_exam = req.params.id;
+            examination_roomService.getExamQuestion(link_room_exam).then((result) => {
+                res.status(200).json({ success: true, code: 0, message: messageConstants.EXAMINATION_FOUND, data: result });
+            }).catch((err) => {
+                res.send({
+                    error: {
+                        status: err.status || 500,
+                        message: err.message
+                    }
+                });
+            });
+        } catch (err) {
+            console.log(err);
+            res.json(responseWithError(err, 'error' || ErrorCodes.ERROR_CODE_SYSTEM_ERROR, 'error', err));
+        }
+    } catch (err) {
+        console.log(err);
+        res.json(responseWithError(err, 'error' || ErrorCodes.ERROR_CODE_SYSTEM_ERROR, 'error', err));
+    }
+};
 
 exports.getInfoCollect = async (req, res) => {
     try {

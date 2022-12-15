@@ -4,6 +4,7 @@ const messageConstants = require('../constant/messageConstants');
 const { ErrorCodes } = require('../helper/constants');
 const { Op } = require("sequelize");
 models.examination_room.belongsTo(models.exam, { foreignKey: "exam_id" });
+
 //Create
 exports.create = async (examination_room) => {
     return models.examination_room.create(examination_room);
@@ -39,6 +40,22 @@ exports.getById = async (id) => {
         id: id,
         deleted: 0
     };
+    return models.examination_room.findOne({
+        where: condition,
+        include: [
+            {
+                model: models.exam,
+                attributes: ['id', 'question']
+            }
+        ]
+    })
+};
+//Get By Id
+exports.getExamQuestion = async (link_room_exam) => {
+    let condition = {
+        link_room_exam: link_room_exam,
+        deleted: 0
+    };
     const exam_room = await models.examination_room.findOne({
         where: condition,
         include: [
@@ -54,10 +71,18 @@ exports.getById = async (id) => {
             id: {
                 [Op.in]: exam_roomJSON?.exam?.question || [],
             }
-        }
+        },
+        attributes: ['answer', 'matching_answers', 'id', 'name', 'type', 'has_mul_correct_answers', 'fill_blank_correct_answer']
     })
-    const questionJSON = JSON.parse(JSON.stringify(questions))
-    return { ...exam_roomJSON, questions: questionJSON }
+    const questionJSON = JSON.parse(JSON.stringify(questions)).map((item, index) => {
+        if (item.type === 4) {
+            item.fill_blank_correct_answer = item.fill_blank_correct_answer.map(answer => ({key: answer.key}))
+        }
+        return {...item, index: index + 1}
+    })
+    const listQuestion = questionJSON.map((item, index) => ({id: item.id, name: item.name, type: item.type, index: index + 1 }))
+    delete exam_roomJSON.exam
+    return { exam_room: exam_roomJSON, questions: questionJSON , list_question: listQuestion}
 };
 
 exports.getInfoCollect = async (link_room_exam) => {
