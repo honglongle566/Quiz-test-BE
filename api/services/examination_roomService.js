@@ -38,6 +38,7 @@ exports.delete = async (id) => {
 exports.getById = async (id) => {
     let condition = {
         id: id,
+        user_id: user_id,
         deleted: 0
     };
     return models.examination_room.findOne({

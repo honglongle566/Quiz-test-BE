@@ -63,7 +63,10 @@ exports.delete = async (req, res) => {
 
 exports.getAll = async (req, res) => {
     try {
-        const data = req.query;
+        const data = {
+            ...req.query,
+            user_id: req.user.id
+        };
         group_questionService.getAll(data).then((data) => {
             res.json(responseSuccess(data));
         }).catch((err) => {
@@ -86,7 +89,7 @@ exports.getAllPaging = async (req, res) => {
             limit,
             offset
         };
-        await group_questionService.getAllPaging(condition, keyword).then((result) => {
+        await group_questionService.getAllPaging(condition, keyword, req.user.id).then((result) => {
             const response = Paginator.getPagingData(result, page, limit);
             res.json(responseSuccess(response));
         }).catch((err) => {

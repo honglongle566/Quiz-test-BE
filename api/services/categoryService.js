@@ -64,9 +64,10 @@ exports.getAll = async (data) => {
     })
 };
 
-exports.getAllPaging = async (data, keyword) => {
+exports.getAllPaging = async (data, keyword, user_id) => {
     let condition = {
         deleted: 0,
+        user_id: user_id,
     };
     if (keyword) {
         condition.name = {
@@ -80,6 +81,9 @@ exports.getAllPaging = async (data, keyword) => {
             ['id', 'DESC'],
         ],
     })
+    if (!count) {
+        return { count: 0, rows: [] }
+    }
     const rowsJSON = JSON.parse(JSON.stringify(rows))
     const categoryIds = rowsJSON.map(item => {
         return item.id

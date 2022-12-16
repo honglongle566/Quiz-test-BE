@@ -28,7 +28,7 @@ exports.update = async (id, groupQuestion) => {
             deleted: 0
         }
     });
-    if (!checkNameExisting) {
+    if (!checkNameExisting || checkNameExisting?.dataValues?.id == id) {
         return models.group_question.update(groupQuestion, {
             where: {
                 id: id,
@@ -39,7 +39,6 @@ exports.update = async (id, groupQuestion) => {
     } else {
         return Promise.reject({ status: ErrorCodes.ERROR_CODE_ITEM_EXIST, message: messageConstants.GROUP_QUESTION_EXIST_NAME });
     }
-
 };
 
 exports.delete = async (id) => {
@@ -48,12 +47,16 @@ exports.delete = async (id) => {
         deleted: 1,
         updated_date: Date()
     }
-    return models.group_question.update(delete_option, {
+    const newGroupQuestion = await models.group_question.update(delete_option, {
         where: {
             id: id,
             deleted: 0
         }
     })
+    if (!newGroupQuestion) {
+        return Promise.reject({ status: ErrorCodes.ERROR_CODE_API_NOT_FOUND, message: 'NOT FOUND' });
+    }
+    return newGroupQuestion
 };
 
 exports.getAll = async (data) => {
@@ -66,9 +69,10 @@ exports.getAll = async (data) => {
     });
 };
 
-exports.getAllPaging = async (data, keyword) => {
+exports.getAllPaging = async (data, keyword, user_id) => {
     let condition = {
         deleted: 0,
+        user_id: user_id,
         name: {
             [Op.like]: `%${keyword}%`,
         }

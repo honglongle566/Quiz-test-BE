@@ -76,7 +76,7 @@ exports.getById = async (req, res) => {
     try {
         try {
             const id = req.params.id;
-            examination_roomService.getById(id).then((result) => {
+            examination_roomService.getById(id, req.user.id).then((result) => {
                 res.status(200).json({ success: true, code: 0, message: messageConstants.EXAMINATION_FOUND, data: result });
             }).catch((err) => {
                 res.send({
@@ -146,7 +146,7 @@ exports.getInfoCollect = async (req, res) => {
 //Get All
 exports.getAll = async (req, res) => {
     try {
-        const data = req.query;
+        const data = req.query ? {...req.query, user_id: req.user.id} : {user_id: req.user.id};
         examination_roomService.getAll(data).then((data) => {
             res.json(responseSuccess(data));
         }).catch((err) => {
@@ -164,7 +164,7 @@ exports.getAllPaging = async (req, res) => {
         const page = parseInt(req.query.page_index) || 1;
         const size = parseInt(req.query.page_size);
         const { limit, offset } = Paginator.getPagination(page, size);
-        const query = req.query ? req.query : null;
+        const query = req.query ? {...req.query, user_id: req.user.id} : {user_id: req.user.id};
         const condition = {
             limit,
             offset,

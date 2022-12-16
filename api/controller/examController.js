@@ -168,7 +168,7 @@ exports.getAllPaging = async (req, res) => {
         const page = parseInt(req.query.page_index) || 1;
         const size = parseInt(req.query.page_size);
         const { limit, offset } = Paginator.getPagination(page, size);
-        const query = req.query ? req.query : null;
+        const query = req.query ? {...req.query, user_id: req.user.id } : { user_id: req.user.id };
         const condition = {
             limit,
             offset,

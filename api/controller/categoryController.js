@@ -45,7 +45,7 @@ exports.delete = async (req, res) => {
 
 exports.getAll = async (req, res) => {
     try {
-        const data = req.query;
+        const data = req.query ? {...req.query, user_id: req.user.id} : {user_id: req.user.id} ;
         categoryService.getAll(data).then((data) => {
             res.json(responseSuccess(data));
         }).catch((err) => {
@@ -69,7 +69,7 @@ exports.getAllPaging = async (req, res) => {
             offset,
             distinct: true
         };
-        await categoryService.getAllPaging(condition, keyword).then((result) => {
+        await categoryService.getAllPaging(condition, keyword, req.user.id).then((result) => {
             const response = Paginator.getPagingData(result, page, limit);
             res.json(responseSuccess(response));
         }).catch((err) => {
