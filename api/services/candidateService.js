@@ -31,3 +31,12 @@ exports.update = async (id, data) => {
     return false;
   }
 };
+exports.getById = async (id) => {
+  let condition = {
+    
+    id,
+  };
+  return models.candidate.findOne({
+    where: condition,
+  });
+};

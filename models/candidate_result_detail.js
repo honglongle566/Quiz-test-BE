@@ -1,5 +1,5 @@
 const { Sequelize, DataTypes } = require('sequelize');
-
+const moment = require("moment");
 module.exports = (sequelize, DataTypes) => {
     var candidate_result_detail = sequelize.define('candidate_result_detail', {
         id: {
@@ -22,6 +22,14 @@ module.exports = (sequelize, DataTypes) => {
             set: function(value) {
               return this.setDataValue("answer_detail", JSON.stringify(value));
             }
+        },
+        time_start: {
+            type: Sequelize.DATE,
+            // get() {
+            //     return moment(this.getDataValue("time_start")).utcOffset('+0700').format('YYYY-MM-DD HH:mm');
+            // },
+
+            
         },
         status: {
             type: Sequelize.INTEGER(2),

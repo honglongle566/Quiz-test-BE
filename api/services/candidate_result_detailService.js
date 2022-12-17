@@ -12,8 +12,14 @@ models.examination_room.hasMany(models.candidate_result_detail, { foreignKey: 'e
 models.exam.hasMany(models.examination_room, { foreignKey: 'exam_id' })
 models.examination_room.belongsTo(models.exam, { foreignKey: "exam_id" });
 exports.create = async (data) => {
+    var check= await models.candidate_result_detail.findOne({
+        where: {
+            candidate_id: data.candidate_id
+        }
+    });
+    if (check) {return check}
+    else {return models.candidate_result_detail.create(data);}
     
-    return models.candidate_result_detail.create(data);
 
 };
 exports.getById = async (id) => {
@@ -34,3 +40,11 @@ exports.getById = async (id) => {
     })
     return a
 };
+exports.update = async (id, Update) => {
+    return models.examination_room.update(Update, {
+        where: {
+            candidate_id: id,
+            deleted: 0
+        }
+    });
+}
