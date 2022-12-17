@@ -49,6 +49,17 @@ exports.getById = async (id) => {
     where: condition,
   });
 };
+exports.getByArray = async (arr) => {
+  
+  return models.question.findAll({
+    where: {
+      id :{
+        [ Op.in]: arr
+      } 
+    },
+
+  });
+};
 
 //Get All
 exports.getAll = async (data) => {

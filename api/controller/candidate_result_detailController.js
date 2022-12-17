@@ -1,6 +1,7 @@
 const candidateResultDetailService = require('../services/candidate_result_detailService');
 const candidateService = require('../services/candidateService');
 const examService = require('../services/examService');
+const questionService= require('../services/questionService')
 const messageConstants = require('../constant/messageConstants');
 const Paginator = require('../commons/paginator');
 const { validationResult } = require('express-validator');
@@ -27,7 +28,7 @@ exports.start= async(req,res) =>{
 exports.create = async (req, res) => {
     try {
         let candidate_id = req.user.id
-        console.log(111112222);
+        console.log(req.body.question);
         let candidate= await candidateService.getById(candidate_id);
         let candidateResult= {
             candidate_id:candidate_id,
@@ -35,6 +36,41 @@ exports.create = async (req, res) => {
             examination_room_id: candidate.examination_room_id
         }
         let data = await candidateResultDetailService.create(candidateResult);
+        // let a={
+        //     '1': [
+        //       'a'
+        //     ],
+        //     '2': [
+        //       'a',
+        //       'b',
+        //       'c'
+        //     ],
+        //     '3': {
+        //       '1': [
+        //         'a',
+        //         'b'
+        //       ],
+        //       '2': [
+        //         'a',
+        //         'b'
+        //       ]
+        //     },
+        //     '4': [
+        //       {
+        //         key: '1',
+        //         content: 'quang'
+        //       },
+        //       {
+        //         key: '2',
+        //         content: 'quang123'
+        //       }
+        //     ],
+        //     '5': [
+        //       'a'
+        //     ]
+        //   }
+       
+        // console.log(a[1]);
 
         // let exam = await candidateResultDetailService.getById(data.id);
 
@@ -87,4 +123,65 @@ exports.create = async (req, res) => {
         res.json(responseWithError(err, 'error' || ErrorCodes.ERROR_CODE_SYSTEM_ERROR, 'error', err));
     }
 };
+exports.update=async (req,res)=>{
+    try {
+        let candidate_id = req.user.id
+        //console.log(req.body.question);
+        let data= await candidateResultDetailService.getById(candidate_id);
+       // console.log("a",data);
+        let array= data.examination_room.exam.question;
+        console.log("abc",array);
+        let question= await questionService.getByArray(array);
+
+
+       
+        let arr1 = question;
+        let arr2 =req.body.list_answer;
+        var total_score = 0;
+        var total = 0
+
+        for (let i = 0; i < arr1.length; i++) {
+            // console.log("abc",arr1[i].correct_answers,arr2[i].answers);
+
+            if (arr1[i].type == 1) {
+                console.log("a",JSON.stringify(arr1[i].correct_answer) ,JSON.stringify(arr2[i+1]));
+                if (JSON.stringify(arr1[i].correct_answer) == JSON.stringify(arr2[i+1])) {
+                    total_score += arr1[i].score;
+                    total += arr1[i].score;
+                    continue;
+                }
+            }
+            if (arr1[i].type == 2) {
+                if (JSON.stringify(arr1[i].correct_answer) == JSON.stringify(arr2[i+1])) {
+                    total_score += arr1[i].score;
+                    total += arr1[i].score;
+                    continue;
+                }
+            }
+            if (arr1[i].type == 3) {
+                if (JSON.stringify(arr1[i].matching_correct_answer) == JSON.stringify(arr2[i+1])) {
+                    total_score += arr1[i].score;
+                    total += arr1[i].score;
+                    continue;
+                }
+            }
+            if (arr1[i].type == 4) {
+                if (JSON.stringify(arr1[i].fill_blank_correct_answer) == JSON.stringify(arr2[i+1])) {
+                    total_score += arr1[i].score;
+                    total += arr1[i].score;
+                    continue
+                }
+            }
+            total += arr1[i].score;
+        }
+        console.log("total", total_score, total);
+        let score = (total_score / total * 10).toFixed(1)
+        let result = await candidateService.update(candidate_id, { score: score })
+        res.json(responseSuccess(question));
+        
+    } catch (err) {
+        console.log(err);
+        res.json(responseWithError(err, 'error' || ErrorCodes.ERROR_CODE_SYSTEM_ERROR, 'error', err));
+    }
+}
 

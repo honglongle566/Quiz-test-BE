@@ -50,7 +50,7 @@ db.notification = require('./notification')(sequelize, Sequelize);
 // db.group_question.sync({ force: true });
 // db.subject.sync({ force: true });
 // db.candidate.sync({ force: true });
- //db.candidate_result_detail.sync({ alter: true });
+ //db.question.sync({ alter: true });
 // db.notification.sync({ force: true });
 
 

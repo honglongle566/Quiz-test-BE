@@ -24,10 +24,10 @@ exports.create = async (data) => {
 };
 exports.getById = async (id) => {
     let condition = {
-        id:id,
+        candidate_id:id,
         deleted: 0
     };
-    console.log("condi",condition);
+    // console.log("condi",condition);
     let a= await models.candidate_result_detail.findOne({
         where: condition,
         include:{
