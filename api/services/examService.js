@@ -91,9 +91,32 @@ exports.getById = async (data) => {
         ...data,
         deleted: 0
     };
-    return exam = await models.exam.findOne({
+    const exam = await models.exam.findOne({
         where: condition
     })
+    let maxScore = 0;
+    const examJSON = JSON.parse(JSON.stringify(exam))
+    const listQuestion = examJSON?.question || []
+    if (!listQuestion.length) {
+        return { ...examJSON, max_score: maxScore }
+    }
+    const questionsDB = await models.question.findAll({
+        where: {
+            id: {
+                [Op.in]: listQuestion
+            },
+            deleted: 0
+        }
+    })
+
+    const questionsDBJSON = JSON.parse(JSON.stringify(questionsDB)) || []
+
+    for (let item of questionsDBJSON) {
+        if (item?.score) {
+            maxScore += item.score
+        }
+    }
+    return { ...examJSON, max_score: maxScore }
 };
 
 //Get All
@@ -121,17 +144,54 @@ exports.getAllPaging = async (data) => {
             [Op.like]: `%${data.query.name}%`,
         }
     }
-    return models.exam.findAndCountAll({
+    const { count, rows } = await models.exam.findAndCountAll({
         where: condition,
         limit: data.limit,
         offset: data.offset,
         include: [
             {
                 model: models.subject,
-            }
+            },
+            {
+                model: models.examination_room,
+            },
         ],
         order: [
             ['id', 'DESC'],
         ],
     })
-};
+    const rowsJSON = rows ? JSON.parse(JSON.stringify(rows)) : []
+    if (!rowsJSON.length) {
+        return { count: count, rows: rowsJSON }
+    }
+    let questionAll = []
+    for (let item of rowsJSON) {
+        let questionItem = item?.question || []
+        questionAll = Array.from(new Set([...questionAll, ...questionItem]))
+    }
+    const questionsDB = await models.question.findAll({
+        where: {
+            id: {
+                [Op.in]: questionAll
+            },
+            deleted: 0
+        }
+    })
+    const questionsDBJSON = JSON.parse(JSON.stringify(questionsDB)) || []
+
+    let newRows = rowsJSON.map(item => {
+        let maxScore = 0;
+        if (!item?.question) {
+            return { ...item, max_score: maxScore }
+        }
+        for (let q of item.question) {
+            let oneQuestion = questionsDBJSON.find(a => a.id === q)
+            if (oneQuestion) {
+                maxScore += oneQuestion.score
+            }
+        }
+        return { ...item, max_score: maxScore }
+    })
+
+    return { count: count, rows: newRows }
+}

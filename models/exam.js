@@ -37,7 +37,8 @@ module.exports = (sequelize, DataTypes) => {
             type: Sequelize.INTEGER(2)
         },
         max_score: {
-            type: Sequelize.INTEGER(2)
+            type: Sequelize.INTEGER(2),
+            defaultValue: 0
         },
         status: {
             type: Sequelize.INTEGER(2),

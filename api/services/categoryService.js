@@ -65,9 +65,9 @@ exports.getAll = async (data) => {
 };
 
 exports.getAllPaging = async (data, keyword, user_id) => {
+    console.log('user_id', user_id);
     let condition = {
         deleted: 0,
-        user_id: user_id,
     };
     if (keyword) {
         condition.name = {
@@ -75,7 +75,7 @@ exports.getAllPaging = async (data, keyword, user_id) => {
         }
     }
     const { count, rows } = await models.category.findAndCountAll({
-        where: condition,
+        where: {...condition,  user_id: user_id},
         ...data,
         order: [
             ['id', 'DESC'],
