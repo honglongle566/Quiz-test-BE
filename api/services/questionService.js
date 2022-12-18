@@ -50,15 +50,16 @@ exports.getById = async (id) => {
   });
 };
 exports.getByArray = async (arr) => {
-  
-  return models.question.findAll({
+  let question = await models.question.findAll({
     where: {
-      id :{
-        [ Op.in]: arr
-      } 
+      id: {
+        [Op.in]: arr
+      }
     },
-
   });
+  let questionDB = JSON.parse(JSON.stringify(question))
+  return arr.map(item => questionDB.find(x => x.id == item))
+  
 };
 
 //Get All
@@ -99,7 +100,14 @@ exports.getAllPaging = async (data) => {
     condition.id = {
       [Op.in]: listQuestion,
     }
+    const {count, rows} = await models.question.findAndCountAll({
+      where: condition,
+    })
+    let questionDB = JSON.parse(JSON.stringify(rows))
+    let newQuestion = listQuestion.map(item => questionDB.find(x => x.id == item))
+    return { count, rows: newQuestion }
   }
+  
   return models.question.findAndCountAll({
     where: condition,
     limit: data.limit,
