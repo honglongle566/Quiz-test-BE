@@ -35,8 +35,8 @@ exports.createQuestionByExam = async (req, res) => {
                 user_id: req.user.id
             };
             const question = await questionService.create(req.body);
-            const exam = await examService.addQuestionsToExam(id, { questions: [question.dataValues.id] })
-            res.json(responseSuccess(exam));
+            await examService.addQuestionsToExam(id, { questions: [question.dataValues.id] })
+            res.json(responseSuccess(question));
         } else {
             res.json('Not Allowed!!!');
         }
@@ -168,7 +168,7 @@ exports.getAllPaging = async (req, res) => {
         const page = parseInt(req.query.page_index) || 1;
         const size = parseInt(req.query.page_size);
         const { limit, offset } = Paginator.getPagination(page, size);
-        const query = req.query ? {...req.query, user_id: req.user.id } : { user_id: req.user.id };
+        const query = req.query ? { ...req.query, user_id: req.user.id } : { user_id: req.user.id };
         const condition = {
             limit,
             offset,
