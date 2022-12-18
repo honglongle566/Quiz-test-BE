@@ -4,5 +4,6 @@ const statisticalController = require('../controller/statisticalController');
 const { checkAccessToken } = require('../middlewares/jwt_token');
 
 router.get('/', statisticalController.get);
+router.get('/:id', statisticalController.getById);
 
 module.exports = router;

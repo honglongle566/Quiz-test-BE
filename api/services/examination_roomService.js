@@ -145,6 +145,28 @@ exports.getAllS = async (data) => {
 
     });
 };
+exports.getByIdS = async (id) => {
+    let condition = {
+        deleted: 0,
+        id:id,
+    };
+
+    return models.examination_room.findAll({
+        where: condition,
+           include: [
+            {
+                model: models.candidate,
+               include: [
+                {
+                    model: models.candidate_result_detail,
+                }
+               ]
+               
+            }
+        ]
+
+    });
+};
 
 //Get All Paging
 exports.getAllPaging = async (data) => {
