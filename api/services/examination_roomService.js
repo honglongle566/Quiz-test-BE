@@ -51,6 +51,21 @@ exports.getById = async (id) => {
         ]
     })
 };
+exports.getById1 = async (id) => {
+    let condition = {
+        id: id,
+        deleted: 0
+    };
+    return models.examination_room.findOne({
+        where: condition,
+        include: [
+            {
+                model: models.exam,
+                attributes: ['id', 'question']
+            }
+        ]
+    })
+};
 //Get By Id
 exports.getExamQuestion = async (link_room_exam) => {
     let condition = {

@@ -10,24 +10,25 @@ const { ErrorCodes } = require('../helper/constants');
 const { condition } = require('sequelize');
 const { candidate } = require('../../models');
 
-exports.start= async(req,res) =>{
-    try {
-        // let id= req.user.id;
-        // // let data1= await candidateService.getById(id);
-        // let a= new Date();
-        // let candidate= 
-        // let data = await candidateResultDetailService.update(id,{start_time: a});
+// exports.start= async(req,res) =>{
+//     try {
+//         // let id= req.user.id;
+//         // // let data1= await candidateService.getById(id);
+//         // let a= new Date();
+//         // let candidate= 
+//         // let data = await candidateResultDetailService.update(id,{start_time: a});
         
-    } catch (err) {
-        console.log(err);
-        res.json(responseWithError(err, 'error' || ErrorCodes.ERROR_CODE_SYSTEM_ERROR, 'error', err));
-    }
-}
+//     } catch (err) {
+//         console.log(err);
+//         res.json(responseWithError(err, 'error' || ErrorCodes.ERROR_CODE_SYSTEM_ERROR, 'error', err));
+//     }
+// }
 
 
 exports.create = async (req, res) => {
     try {
-        let candidate_id = req.user.id
+        console.log(111);
+        let candidate_id = req.candidate.id
         console.log(req.body.question);
         let candidate= await candidateService.getById(candidate_id);
         let candidateResult= {
@@ -36,86 +37,6 @@ exports.create = async (req, res) => {
             examination_room_id: candidate.examination_room_id
         }
         let data = await candidateResultDetailService.create(candidateResult);
-        // let a={
-        //     '1': [
-        //       'a'
-        //     ],
-        //     '2': [
-        //       'a',
-        //       'b',
-        //       'c'
-        //     ],
-        //     '3': {
-        //       '1': [
-        //         'a',
-        //         'b'
-        //       ],
-        //       '2': [
-        //         'a',
-        //         'b'
-        //       ]
-        //     },
-        //     '4': [
-        //       {
-        //         key: '1',
-        //         content: 'quang'
-        //       },
-        //       {
-        //         key: '2',
-        //         content: 'quang123'
-        //       }
-        //     ],
-        //     '5': [
-        //       'a'
-        //     ]
-        //   }
-       
-        // console.log(a[1]);
-
-        // let exam = await candidateResultDetailService.getById(data.id);
-
-        // let detailexam = exam.examination_room.exam;
-        // let arr1 = detailexam.question;
-        // let arr2 = exam.answer_detail;
-        // var total_score = 0;
-        // var total = 0
-
-        // for (let i = 0; i < arr1.length; i++) {
-        //     // console.log("abc",arr1[i].correct_answers,arr2[i].answers);
-
-        //     if (arr1[i].type == 1) {
-        //         if (JSON.stringify(arr1[i].correct_answers) == JSON.stringify(arr2[i].answers)) {
-        //             total_score += arr1[i].score;
-        //             total += arr1[i].score;
-        //             continue;
-        //         }
-        //     }
-        //     if (arr1[i].type == 2) {
-        //         if (JSON.stringify(arr1[i].correct_answers) == JSON.stringify(arr2[i].answers)) {
-        //             total_score += arr1[i].score;
-        //             total += arr1[i].score;
-        //             continue;
-        //         }
-        //     }
-        //     if (arr1[i].type == 3) {
-        //         if (JSON.stringify(arr1[i].matching_correct_answers) == JSON.stringify(arr2[i].answers)) {
-        //             total_score += arr1[i].score;
-        //             total += arr1[i].score;
-        //             continue;
-        //         }
-        //     }
-        //     if (arr1[i].type == 4) {
-        //         if (JSON.stringify(arr1[i].fill_blank_correct_answers) == JSON.stringify(arr2[i].answers)) {
-        //             total_score += arr1[i].score;
-        //             total += arr1[i].score;
-        //             continue
-        //         }
-        //     }
-        //     total += arr1[i].score;
-        // }
-        // console.log("total", total_score, total);
-        // let score = (total_score / total * 10).toFixed(1)
-        // let result = await candidateService.update(data.candidate_id, { score: score })
         res.json(responseSuccess(data));
 
     } catch (err) {
@@ -125,10 +46,9 @@ exports.create = async (req, res) => {
 };
 exports.update=async (req,res)=>{
     try {
-        let candidate_id = req.user.id
-        //console.log(req.body.question);
+        let candidate_id = req.candidate.id
         let data= await candidateResultDetailService.getById(candidate_id);
-       // console.log("a",data);
+        
         let array= data.examination_room.exam.question;
         console.log("abc",array);
         let question= await questionService.getByArray(array);
@@ -138,46 +58,81 @@ exports.update=async (req,res)=>{
         let arr1 = question;
         let arr2 =req.body.list_answer;
         var total_score = 0;
-        var total = 0
+        var total = 0;
+        var total_question=arr1.length;
+        var total_right=0;
+        var total_null=0;
 
         for (let i = 0; i < arr1.length; i++) {
-            // console.log("abc",arr1[i].correct_answers,arr2[i].answers);
-
+            total += arr1[i].score;
+            if (arr2[i+1]) {
             if (arr1[i].type == 1) {
                 console.log("a",JSON.stringify(arr1[i].correct_answer) ,JSON.stringify(arr2[i+1]));
                 if (JSON.stringify(arr1[i].correct_answer) == JSON.stringify(arr2[i+1])) {
                     total_score += arr1[i].score;
-                    total += arr1[i].score;
+                    total_right+=1;
+                    // total += arr1[i].score;
                     continue;
                 }
             }
             if (arr1[i].type == 2) {
                 if (JSON.stringify(arr1[i].correct_answer) == JSON.stringify(arr2[i+1])) {
                     total_score += arr1[i].score;
-                    total += arr1[i].score;
+                    total_right+=1;
+                    // total += arr1[i].score;
                     continue;
                 }
             }
             if (arr1[i].type == 3) {
                 if (JSON.stringify(arr1[i].matching_correct_answer) == JSON.stringify(arr2[i+1])) {
                     total_score += arr1[i].score;
-                    total += arr1[i].score;
+                    total_right+=1;
+                    // total += arr1[i].score;
                     continue;
                 }
             }
             if (arr1[i].type == 4) {
                 if (JSON.stringify(arr1[i].fill_blank_correct_answer) == JSON.stringify(arr2[i+1])) {
                     total_score += arr1[i].score;
-                    total += arr1[i].score;
+                    total_right+=1;
+                    // total += arr1[i].score;
                     continue
                 }
             }
-            total += arr1[i].score;
+        } else {
+          total_null+=1;
+          continue;
         }
-        console.log("total", total_score, total);
-        let score = (total_score / total * 10).toFixed(1)
-        let result = await candidateService.update(candidate_id, { score: score })
-        res.json(responseSuccess(question));
+    } 
+        
+        console.log("total", total_score, total,total_null,total_right);
+        var result = (total_score / total * 100).toFixed(1);
+        var time_end= new Date();
+        let b= time_end;
+        b.setTime(b.getTime() + 30*1000);
+        let a= new Date(data.time_start)
+        console.log("chưa",a);
+        a.setTime(a.getTime() + data.examination_room.exam.time_limit*60*1000);
+        console.log("aaaa",a, time_end);
+        if (b>a){
+              res.json(responseWithError( ErrorCodes.ERROR_CODE_TIME_LIMIT,'Bạn đã vượt quá thời gian cho phép'))
+        } else{
+            var update={
+                total_null: total_null,
+                max_score: total,
+                total_question: total_question,
+                total_right:total_right,
+                score: total_score,
+                result: result,
+                time_end: time_end,
+                answer_detail: req.body.list_answer
+            }
+            let result1 = await candidateResultDetailService.update(candidate_id, update)
+            res.json(responseSuccess());
+
+        }
+
+       
         
     } catch (err) {
         console.log(err);

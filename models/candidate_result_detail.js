@@ -31,9 +31,36 @@ module.exports = (sequelize, DataTypes) => {
 
             
         },
+        time_end: {
+            type: Sequelize.DATE,
+            // get() {
+            //     return moment(this.getDataValue("time_start")).utcOffset('+0700').format('YYYY-MM-DD HH:mm');
+            // },
+
+            
+        },
+        score: {
+            type: Sequelize.INTEGER(4)
+        },
+        max_score: {
+            type: Sequelize.INTEGER(4)
+        },
+        total_right: {
+            type: Sequelize.INTEGER(4)
+        },
+        total_question:{
+            type: Sequelize.INTEGER(4)
+        },
         status: {
             type: Sequelize.INTEGER(2),
             defaultValue: 0
+        },
+        percent:{
+            type: Sequelize.INTEGER(4),
+            defaultValue: 0,
+        },
+        result:{
+            type: Sequelize.INTEGER(4),
         },
         deleted: {
             type: Sequelize.INTEGER(2),

@@ -41,7 +41,7 @@ exports.getById = async (id) => {
     return a
 };
 exports.update = async (id, Update) => {
-    return models.examination_room.update(Update, {
+    return models.candidate_result_detail.update(Update, {
         where: {
             candidate_id: id,
             deleted: 0

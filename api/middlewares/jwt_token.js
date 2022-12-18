@@ -37,7 +37,7 @@ exports.checkAccessTokenCandidate = async (req, res, next) => {
         if (!token)
             res.json(responseWithError(ErrorCodes.ERROR_CODE_UNAUTHORIZED, "Access token not found"));
         const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET)
-        let candidate = await models.user.findOne({
+        let candidate = await models.candidate.findOne({
             where: {
                 id: decoded.candidateId,
             },

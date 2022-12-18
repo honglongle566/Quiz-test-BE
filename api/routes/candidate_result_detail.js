@@ -1,10 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const candidateResultDetailController = require('../controller/candidate_result_detailController');
-const { checkAccessToken } = require('../middlewares/jwt_token');
+const { checkAccessTokenCandidate } = require('../middlewares/jwt_token');
 
 //router.delete('/:id', checkAccessToken, categoryController.delete);
-router.post('/', checkAccessToken, candidateResultDetailController.create);
-router.put('/', checkAccessToken, candidateResultDetailController.update);
+router.post('/', checkAccessTokenCandidate, candidateResultDetailController.create);
+router.put('/', checkAccessTokenCandidate, candidateResultDetailController.update);
 
 module.exports = router;
