@@ -8,6 +8,7 @@ const subjectRouter = require('./subject');
 const questionRouter = require('./question');
 const candidateRouter= require("./candidate");
 const candidateResultRouter= require("./candidate_result_detail");
+const statisticalRouter =require('./statistical')
 
 const router = express.Router();
 router.use('/api/user', usersRouter);
@@ -19,6 +20,8 @@ router.use('/api/subject', subjectRouter);
 router.use('/api/question', questionRouter);
 router.use('/api/candidate',candidateRouter)
 router.use('/api/candidate-result-detail',candidateResultRouter)
+router.use('/api/statistical',statisticalRouter);
+
 
 
 module.exports = router;

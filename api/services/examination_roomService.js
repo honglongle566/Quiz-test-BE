@@ -4,7 +4,8 @@ const messageConstants = require('../constant/messageConstants');
 const { ErrorCodes } = require('../helper/constants');
 const { Op } = require("sequelize");
 models.examination_room.belongsTo(models.exam, { foreignKey: "exam_id" });
-
+models.candidate_result_detail.belongsTo(models.examination_room, { foreignKey: "examination_room_id" });
+models.candidate_result_detail.belongsTo(models.candidate, { foreignKey: "candidate_id" });
 //Create
 exports.create = async (examination_room) => {
     return models.examination_room.create(examination_room);
@@ -120,6 +121,27 @@ exports.getAll = async (data) => {
 
     return models.examination_room.findAndCountAll({
         where: condition,
+
+    });
+};
+exports.getAllS = async (data) => {
+    let condition = {
+        deleted: 0,
+    };
+
+    return models.examination_room.findAll({
+        where: condition,
+           include: [
+            {
+                model: models.candidate,
+               include: [
+                {
+                    model: models.candidate_result_detail,
+                }
+               ]
+               
+            }
+        ]
 
     });
 };

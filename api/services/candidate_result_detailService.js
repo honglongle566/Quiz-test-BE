@@ -8,6 +8,7 @@ const { assign } = require('nodemailer/lib/shared');
 const { matchedData } = require('express-validator');
 const {signAccessToken, signRefreshToken} = require('../middlewares/jwt_token');
 models.examination_room.hasMany(models.candidate_result_detail, { foreignKey: 'examination_room_id' })
+models.candidate.hasMany(models.candidate_result_detail, { foreignKey: 'candidate_id' })
  models.candidate_result_detail.belongsTo(models.examination_room, { foreignKey: "examination_room_id" });
 models.exam.hasMany(models.examination_room, { foreignKey: 'exam_id' })
 models.examination_room.belongsTo(models.exam, { foreignKey: "exam_id" });

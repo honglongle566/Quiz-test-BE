@@ -7,6 +7,7 @@ const { ChainCondition } = require('express-validator/src/context-items');
 const { assign } = require('nodemailer/lib/shared');
 const { matchedData } = require('express-validator');
 const { signAccessToken, signRefreshToken } = require('../middlewares/jwt_token');
+models.examination_room.hasMany(models.candidate, { foreignKey: 'examination_room_id' })
 
 exports.register = async (account) => {
   const newCandidate = await models.candidate.create(account);

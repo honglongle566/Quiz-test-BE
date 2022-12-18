@@ -20,10 +20,6 @@ exports.create = async (req, res) => {
              const candidate = await candidateService.register(req.body);
         res.json(responseSuccess(candidate));
         }
-        
-        //const candidate = await candidateService.register(req.body);
-        // res.json(responseSuccess(candidate));
-        // res.json(responseSuccess(a));
     } catch (err) {
         console.log(err);
         res.json(responseWithError(err, 'error' || ErrorCodes.ERROR_CODE_SYSTEM_ERROR, 'error', err));

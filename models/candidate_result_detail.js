@@ -51,6 +51,9 @@ module.exports = (sequelize, DataTypes) => {
         total_question:{
             type: Sequelize.INTEGER(4)
         },
+        total_null:{
+            type: Sequelize.INTEGER(4)
+        },
         status: {
             type: Sequelize.INTEGER(2),
             defaultValue: 0
