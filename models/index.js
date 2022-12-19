@@ -40,9 +40,8 @@ db.group_question = require('./group_question')(sequelize, Sequelize);
 db.subject = require('./subject')(sequelize, Sequelize);
 db.candidate = require('./candidate')(sequelize, Sequelize);
 db.candidate_result_detail = require('./candidate_result_detail')(sequelize, Sequelize);
-db.notification = require('./notification')(sequelize, Sequelize);
 
-//db.sequelize.sync({ force: true });
+//db.sequelize.sync({ alter: true });
 
 // db.user.sync({ alter: true });
 // db.examination_room.sync({ force: true });

@@ -10,12 +10,6 @@ module.exports = (sequelize, DataTypes) => {
         primaryKey: true,
         type: Sequelize.INTEGER(4)
       },
-      google_id: {
-        type: Sequelize.STRING(255)
-      },
-      facebook_id: {
-        type: Sequelize.STRING(255)
-      },
       role: {
         type: Sequelize.INTEGER(2),
         defaultValue: 2
@@ -47,22 +41,7 @@ module.exports = (sequelize, DataTypes) => {
       date_of_birth: {
         type: Sequelize.DATE
       },
-      avatar: {
-        type: Sequelize.STRING(1024)
-      },
-      token: {
-        type: Sequelize.STRING(255)
-      },
-      reset_token: {
-        type: Sequelize.STRING(255),
-        allowNull: true
-      },
-      expires: {
-        type: Sequelize.DATE,
-      },
-      expires_reset_token: {
-        type: Sequelize.DATE,
-      },
+     
       nation: {
         type: Sequelize.STRING(255)
       },
