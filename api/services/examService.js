@@ -31,7 +31,7 @@ exports.addQuestionsToExam = async (id, data) => {
     })
     const questions = data.questions
     const oldQuestion = oldExam.dataValues.question ? JSON.parse(oldExam.dataValues.question) : [];
-    const newQuestion = Array.from(new Set([...oldQuestion, ...questions]))
+    const newQuestion = Array.from(new Set([...questions, ...oldQuestion]))
     if (oldQuestion.length === newQuestion.length) {
         return Promise.reject({ status: ErrorCodes.ERROR_CODE_ITEM_EXIST, message: 'EXAM_EXIST_QUESTION' });
     }

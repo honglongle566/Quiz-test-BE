@@ -51,7 +51,7 @@ db.candidate_result_detail = require('./candidate_result_detail')(sequelize, Seq
 // db.group_question.sync({ force: true });
 // db.subject.sync({ force: true });
 // db.candidate.sync({ force: true });
- //db.candidate_result_detail.sync({ alter: true });
+//  db.candidate_result_detail.sync({ alter: true });
 // db.notification.sync({ force: true });
 
 

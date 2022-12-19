@@ -36,7 +36,7 @@ exports.delete = async (id) => {
 };
 
 //Get By Id
-exports.getById = async (id) => {
+exports.getById = async (id, user_id) => {
     let condition = {
         id: id,
         user_id: user_id,
@@ -47,7 +47,6 @@ exports.getById = async (id) => {
         include: [
             {
                 model: models.exam,
-                attributes: ['id', 'question']
             }
         ]
     })
@@ -78,28 +77,31 @@ exports.getExamQuestion = async (link_room_exam) => {
         include: [
             {
                 model: models.exam,
-                attributes: ['id', 'question']
             }
         ]
     })
     const exam_roomJSON = JSON.parse(JSON.stringify(exam_room))
-    const questions = await models.question.findAll({
+    let questionDB = await models.question.findAll({
         where: {
             id: {
                 [Op.in]: exam_roomJSON?.exam?.question || [],
-            }
+            },
         },
         attributes: ['answer', 'matching_answers', 'id', 'name', 'type', 'has_mul_correct_answers', 'fill_blank_correct_answer']
     })
+    questionDB = JSON.parse(JSON.stringify(questionDB))
+    let questions = []
+    if (questionDB?.length) {
+        questions = exam_roomJSON?.exam?.question.map(item => questionDB.find(x => x.id == item))
+    }
     const questionJSON = JSON.parse(JSON.stringify(questions)).map((item, index) => {
         if (item.type === 4) {
-            item.fill_blank_correct_answer = item.fill_blank_correct_answer.map(answer => ({key: answer.key}))
+            item.fill_blank_correct_answer = item.fill_blank_correct_answer.map(answer => ({ key: answer.key }))
         }
-        return {...item, index: index + 1}
+        return { ...item, index: index + 1 }
     })
-    const listQuestion = questionJSON.map((item, index) => ({id: item.id, name: item.name, type: item.type, index: index + 1 }))
-    delete exam_roomJSON.exam
-    return { exam_room: exam_roomJSON, questions: questionJSON , list_question: listQuestion}
+    const listQuestion = questionJSON.map((item, index) => ({ id: item.id, name: item.name, type: item.type, index: index + 1 }))
+    return { exam_room: exam_roomJSON, questions: questionJSON, list_question: listQuestion }
 };
 
 exports.getInfoCollect = async (link_room_exam) => {
