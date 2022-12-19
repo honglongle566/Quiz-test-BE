@@ -41,7 +41,7 @@ db.subject = require('./subject')(sequelize, Sequelize);
 db.candidate = require('./candidate')(sequelize, Sequelize);
 db.candidate_result_detail = require('./candidate_result_detail')(sequelize, Sequelize);
 
-//db.sequelize.sync({ alter: true });
+//db.sequelize.sync({ force: true });
 
 // db.user.sync({ alter: true });
 // db.examination_room.sync({ force: true });
