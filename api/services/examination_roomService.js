@@ -142,7 +142,11 @@ exports.getAllS = async (data) => {
                 }
                ]
                
+            },
+            {
+                model: models.exam,
             }
+
         ]
 
     });

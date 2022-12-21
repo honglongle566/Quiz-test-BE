@@ -25,3 +25,24 @@ exports.create = async (req, res) => {
         res.json(responseWithError(err, 'error' || ErrorCodes.ERROR_CODE_SYSTEM_ERROR, 'error', err));
     }
 };
+exports.getAllCondition = async (req, res) => {
+    try {
+        let data= req.query;
+      let a= await candidateService.getAll(data);
+      res.json(responseSuccess(a));
+    } catch (err) {
+        console.log(err);
+        res.json(responseWithError(err, 'error' || ErrorCodes.ERROR_CODE_SYSTEM_ERROR, 'error', err));
+
+    }
+};
+exports.getAll = async (req, res) => {
+    try {    
+      let a= await candidateService.getAll();
+      res.json(responseSuccess(a));
+    } catch (err) {
+        console.log(err);
+        res.json(responseWithError(err, 'error' || ErrorCodes.ERROR_CODE_SYSTEM_ERROR, 'error', err));
+
+    }
+};

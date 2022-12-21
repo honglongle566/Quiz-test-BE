@@ -40,3 +40,20 @@ exports.getById = async (id) => {
     where: condition,
   });
 };
+
+exports.getAll = async () => {
+  let condition = {
+      deleted: 0,
+  };
+  console.log("condition",condition);
+  let a= await models.candidate.findAll({
+      where: condition,
+      include:[{
+        model: models.candidate_result_detail
+      }
+       
+      ]
+  });
+  console.log("a",a);
+  return a
+};

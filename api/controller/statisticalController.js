@@ -64,6 +64,47 @@ exports.get = async (req, res) => {
         res.json(responseWithError(err, 'error' || ErrorCodes.ERROR_CODE_SYSTEM_ERROR, 'error', err));
     }
 };
+exports.get1 = async (req, res) => {
+    try {
+      
+       var a= await examination_roomService.getAllS();
+      
+       let arr=[]
+       await Promise.all(a.map(async (pro,index) => {
+       arr[index]={};
+       arr[index].id= pro.id;
+       arr[index].name=pro.exam.name;
+       arr[index].total_candidate= pro.candidates.length;
+       arr[index].total_candidate_done=0;
+       arr[index].score=0;
+       arr[index].time=0
+       
+       let total_score=0;
+       await Promise.all( pro.candidates.map(async(p)=>{
+        if ( (p.candidate_result_details.length) !== 0){
+            //console.log(p.candidate_result_details);
+            let b=p.candidate_result_details
+         if (b[0].dataValues.time_end){
+            console.log(1222);
+            arr[index].total_candidate_done+=1
+            total_score+=b[0].dataValues.score
+            console.log("abc",b[0].dataValues.time_end.getTime()-b[0].dataValues.time_start.getTime());
+            arr[index].time+= (b[0].dataValues.time_end.getTime()-b[0].dataValues.time_start.getTime())
+         }
+        }
+       }
+       ))
+       arr[index].score= total_score/arr[index].total_candidate_done;
+       arr[index].time=arr[index].time/arr[index].total_candidate_done;
+       arr[index].time=msToTime( arr[index].time)
+
+       }))
+       res.json(responseSuccess(arr));
+    } catch (err) {
+        console.log(err);
+        res.json(responseWithError(err, 'error' || ErrorCodes.ERROR_CODE_SYSTEM_ERROR, 'error', err));
+    }
+};
 exports.getById = async (req, res) => {
     try {
         
