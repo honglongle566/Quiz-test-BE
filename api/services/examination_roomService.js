@@ -127,6 +127,16 @@ exports.getAll = async (data) => {
 
     });
 };
+exports.getAll11 = async () => {
+    let condition = {
+        deleted: 0,
+    };
+
+    return models.examination_room.findAndCountAll({
+        where: condition,
+
+    });
+};
 exports.getAllS = async (data) => {
     let condition = {
         deleted: 0,

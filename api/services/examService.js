@@ -11,6 +11,16 @@ models.exam.belongsTo(models.subject, { foreignKey: "subject_id" });
 exports.create = async (exam) => {
     return models.exam.create(exam);
 };
+exports.getAll11 = async () => {
+    let condition = {
+        deleted: 0,
+    };
+
+    return models.exam.findAndCountAll({
+        where: condition,
+
+    });
+};
 
 
 //Update exam

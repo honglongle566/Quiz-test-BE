@@ -23,6 +23,16 @@ exports.update = async (id, questionUpdate) => {
     return false;
   }
 };
+exports.getAll11 = async () => {
+  let condition = {
+      deleted: 0,
+  };
+
+  return models.question.findAndCountAll({
+      where: condition,
+
+  });
+};
 
 //Delete question
 exports.delete = async (id) => {

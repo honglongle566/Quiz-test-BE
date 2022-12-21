@@ -45,6 +45,16 @@ exports.update = async (id, category) => {
     }
 
 };
+exports.getAll11 = async () => {
+    let condition = {
+        deleted: 0,
+    };
+
+    return models.category.findAndCountAll({
+        where: condition,
+
+    });
+};
 
 exports.delete = async (id) => {
     return models.category.destroy({

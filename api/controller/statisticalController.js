@@ -1,12 +1,13 @@
 const questionService = require('../services/questionService.js');
 const examination_roomService= require('../services/examination_roomService');
-const messageConstants = require('../constant/messageConstants');
+const categoryService =require('../services/categoryService')
+const examService= require('../services/examService')
 const Paginator = require('../commons/paginator');
 const { validationResult } = require('express-validator');
 const { responseSuccess, responseWithError } = require('../helper/messageResponse');
 const { ErrorCodes } = require('../helper/constants');
 const { condition } = require('sequelize');
-const { examination_room } = require('../../models');
+const { examination_room, category } = require('../../models');
 const moment = require('moment')
 
 // Đợt thi
@@ -144,5 +145,25 @@ exports.getById = async (req, res) => {
     } catch (err) {
         console.log(err);
         res.json(responseWithError(err, 'error' || ErrorCodes.ERROR_CODE_SYSTEM_ERROR, 'error', err));
+    }
+};
+exports.getAllToTal = async (req, res) => {
+    try {    
+      let a= await examService.getAll11();
+      let b= await categoryService.getAll11()
+      let c= await questionService.getAll11();
+      let d= await examination_roomService.getAll11()
+
+      let data={
+        total_exam: a.count,
+        total_category: b.count,
+        total_question: c.count,
+        total_examination_room: d.count
+      }
+      res.json(responseSuccess(data));
+    } catch (err) {
+        console.log(err);
+        res.json(responseWithError(err, 'error' || ErrorCodes.ERROR_CODE_SYSTEM_ERROR, 'error', err));
+
     }
 };
