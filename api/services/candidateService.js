@@ -34,7 +34,6 @@ exports.update = async (id, data) => {
 };
 exports.getById = async (id) => {
   let condition = {
-    
     id,
   };
   return models.candidate.findOne({

@@ -6,6 +6,6 @@ const { checkAccessTokenCandidate } = require('../middlewares/jwt_token');
 //router.delete('/:id', checkAccessToken, categoryController.delete);
 router.post('/', checkAccessTokenCandidate, candidateResultDetailController.create);
 router.put('/', checkAccessTokenCandidate, candidateResultDetailController.update);
-router.get('/', checkAccessTokenCandidate, candidateResultDetailController.result);
+router.get('/:id', candidateResultDetailController.result);
 
 module.exports = router;

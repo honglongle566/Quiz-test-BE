@@ -33,10 +33,11 @@ exports.getById = async (id) => {
         where: condition,
         include:{
             model:models.examination_room,
-            attributes: ["id"],
+            attributes: ["id", 'name'],
             include: [{
                 model:models.exam,
-            }]
+            },]
+            
         }
     })
     return a

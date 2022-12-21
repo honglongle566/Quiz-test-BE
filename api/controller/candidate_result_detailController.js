@@ -8,7 +8,7 @@ const { validationResult } = require('express-validator');
 const { responseSuccess, responseWithError } = require('../helper/messageResponse');
 const { ErrorCodes } = require('../helper/constants');
 const { condition } = require('sequelize');
-const { candidate } = require('../../models');
+const { candidate, examination_room } = require('../../models');
 
 exports.create = async (req, res) => {
     try {
@@ -127,7 +127,7 @@ exports.update = async (req, res) => {
 
 exports.result = async (req, res) => {
     try {
-        let candidate_id = req.candidate.id
+        let candidate_id = req.params.id
         let data = await candidateResultDetailService.getById(candidate_id);
         let arr2 = data.answer_detail;
         let array = data.examination_room.exam.question;
@@ -138,23 +138,32 @@ exports.result = async (req, res) => {
         for (let i = 0; i < arr1.length; i++) {
             if (arr2[i + 1]) {
                 arr1[i] = {
-                    ...arr1[i].dataValues,
+                    index: i+ 1,
+                    ...arr1[i],
                     examinee_answers: arr2[i + 1]
 
 
                 }
             } else {
                 arr1[i] = {
-                    ...arr1[i].dataValues,
+                    index: i + 1,
+                    ...arr1[i],
                     examinee_answers: null
                 }
 
 
             }
         }
+        const candidate = await candidateService.getById(candidate_id)
+        console.log('candidate', candidate);
         let data1 = {
+            name: candidate.dataValues.full_name,
+            candidate: candidate,
+            exam_room_name: data.examination_room.name,
             score: data.score,
             max_score: data.max_score,
+            time_start: data.time_start,
+            time_end: data.time_end,
             total_right: data.total_right,
             total_question: data.total_question,
             result: data.result,
