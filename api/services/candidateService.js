@@ -8,6 +8,9 @@ const { assign } = require('nodemailer/lib/shared');
 const { matchedData } = require('express-validator');
 const { signAccessToken, signRefreshToken } = require('../middlewares/jwt_token');
 models.examination_room.hasMany(models.candidate, { foreignKey: 'examination_room_id' })
+models.exam.hasMany(models.candidate, { foreignKey: 'exam_id' })
+models.candidate.belongsTo(models.examination_room, { foreignKey: 'examination_room_id' })
+models.candidate.belongsTo(models.exam, { foreignKey: 'exam_id' })
 
 exports.register = async (account) => {
   const newCandidate = await models.candidate.create(account);
@@ -50,6 +53,12 @@ exports.getAll = async () => {
       where: condition,
       include:[{
         model: models.candidate_result_detail
+      },
+      {
+        model: models.exam
+      },
+      {
+        model: models.examination_room
       }
        
       ]

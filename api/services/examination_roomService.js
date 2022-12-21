@@ -3,7 +3,8 @@ const models = require('../../models');
 const messageConstants = require('../constant/messageConstants');
 const { ErrorCodes } = require('../helper/constants');
 const { Op } = require("sequelize");
-models.examination_room.belongsTo(models.exam, { foreignKey: "exam_id" });
+
+models.exam.hasMany(models.candidate, { foreignKey: 'exam_id' })
 models.candidate_result_detail.belongsTo(models.examination_room, { foreignKey: "examination_room_id" });
 models.candidate_result_detail.belongsTo(models.candidate, { foreignKey: "candidate_id" });
 //Create
